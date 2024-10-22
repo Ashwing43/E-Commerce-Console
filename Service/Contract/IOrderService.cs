@@ -9,7 +9,7 @@ namespace ECommerce.Services
         Order GetOrderById(Guid id);
         IEnumerable<Order> GetAllOrders();
 
-        void GetAllOrdersByUserId(Guid UserId);
+        IEnumerable<Order> GetAllOrdersByUserId(Guid UserId);
 
         void GetOrderStatusAsync(Guid userId);
 

@@ -157,10 +157,11 @@ class Program
             Console.WriteLine("1. View All Products");
             Console.WriteLine("2. Place Order");
             Console.WriteLine("3. View All Orders");
-            Console.WriteLine("4. My Profile");
-            Console.WriteLine("5. Edit Profile");
-            Console.WriteLine("6. Check Order Status");
-            Console.WriteLine("7. Logout");
+            Console.WriteLine("4. Cancel Order");
+            Console.WriteLine("5. My Profile");
+            Console.WriteLine("6. Edit Profile");
+            Console.WriteLine("7. Check Order Status");
+            Console.WriteLine("8. Logout");
             Console.WriteLine("Enter a choice:");
 
             bool breaker = false;
@@ -182,18 +183,22 @@ class Program
                     break;
 
                 case "4":
-                    userController.DisplayInfo(customerId);
+                    orderController.CancelOrder(customerId);
                     break;
 
                 case "5":
-                    userController.EditProfile(customerId);
+                    userController.DisplayInfo(customerId);
                     break;
 
                 case "6":
-                    orderController.GetOrderStatus(customerId);
+                    userController.EditProfile(customerId);
                     break;
 
                 case "7":
+                    orderController.GetOrderStatus(customerId);
+                    break;
+
+                case "8":
                     Loader.Loader.RunLogout();
                     breaker = true;
                     Console.Clear();

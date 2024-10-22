@@ -5,6 +5,7 @@ using ECommerce.Services;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
+using CustomExceptions;
 
 namespace ECommerce.Controllers
 {
@@ -222,7 +223,14 @@ namespace ECommerce.Controllers
         {
             try
             {
-                _orderService.GetAllOrdersByUserId(UserId);
+                var orders = _orderService.GetAllOrdersByUserId(UserId);
+                foreach (var order in orders)
+                {
+                    Console.WriteLine($"\nOrder ID: {order.Id}, Total Amount: {order.TotalAmount}, Status: {order.OrderStatus}");
+                }
+                Console.WriteLine("\nPress any key to return to menu");
+                Console.ReadKey();
+                Console.Clear();
             }
             catch (Exception e)
             {
@@ -249,6 +257,83 @@ namespace ECommerce.Controllers
             try
             {
                 _orderService.ChangeOrderStatus();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Something went wrong.");
+                CustomLogger.Logger.LogError(e);
+            }
+        }
+
+        public void CancelOrder(Guid userId)
+        {
+            try
+            {
+                var orders = _orderService.GetAllOrdersByUserId(userId).Where(order => order.OrderStatus != OrderStatus.Delivered && order.OrderStatus != OrderStatus.Cancelled).ToList();
+                if(orders.Count < 1)
+                {
+                    Console.WriteLine("No orders at the moment to cancel.");
+                    Console.WriteLine("\nPress any key to return to menu");
+                    Console.ReadKey();
+                    Console.Clear();
+                    return;
+                }
+                foreach (var order in orders)
+                {
+                    Console.WriteLine($"\nOrder ID: {order.Id}, Total Amount: {order.TotalAmount}, Status: {order.OrderStatus}");
+                }
+
+                Console.WriteLine("Enter order id to cancel:");
+                var input = "";
+                Guid id = new Guid();
+                while (string.IsNullOrWhiteSpace(input))
+                {
+                    input = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(input))
+                    {
+                        Console.WriteLine("Input cannot be empty.");
+                    }
+                    else if (Guid.TryParse(input, out Guid k))
+                    {
+                        id = k;
+                        break;
+                    }
+                }
+
+                try
+                {
+                    Order order = _orderService.GetOrderById(id);
+                    if (order is null)
+                        throw new OrderNotFoundException();
+
+                    if (order.OrderStatus == OrderStatus.Cancelled)
+                    {
+                        Console.WriteLine("The order is already cancelled.");
+                    }
+                    else if (order.OrderStatus == OrderStatus.Delivered)
+                    {
+                        Console.WriteLine("The order is delivered. Cannot cancelled.");
+                    }
+                    else
+                    {
+                        order.OrderStatus = OrderStatus.Cancelled;
+                        Console.WriteLine("Order has been cancelled");
+                    }
+                }
+                catch (OrderNotFoundException ex)
+                {
+                    Console.WriteLine("Order cannot be found");
+                    CustomLogger.Logger.LogError(ex);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Something went wrong.");
+                    CustomLogger.Logger.LogError(e);
+                }
+
+                Console.WriteLine("\nPress any key to return to menu");
+                Console.ReadKey();
+                Console.Clear();
             }
             catch (Exception e)
             {

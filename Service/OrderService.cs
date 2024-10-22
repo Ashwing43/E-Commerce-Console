@@ -3,6 +3,7 @@ using CustomExceptions;
 using Microsoft.Extensions.Logging;
 using ECommerce.Models;
 using ECommerce.Repositories;
+using System.Xml.Serialization;
 
 namespace ECommerce.Services
 {
@@ -60,30 +61,18 @@ namespace ECommerce.Services
             }
         }
 
-        public void GetAllOrdersByUserId(Guid UserId)
+        public IEnumerable<Order> GetAllOrdersByUserId(Guid UserId)
         {
             try
             {
                 var orders = _orderRepository.GetAll().Where(order => order.UserId == UserId);
-                foreach (var order in orders)
-                {
-                    Console.WriteLine($"\nOrder ID: {order.Id}, Total Amount: {order.TotalAmount}, Status: {order.OrderStatus}");
-                    Console.WriteLine("Products:");
-                    int i = 1;
-                    foreach (Guid id in order.ProductIds)
-                    {
-                        Console.WriteLine($"\t{i++}  " + _productRepository.GetById(id).Name);
-                    }
-
-                }
-                Console.WriteLine("\nPress any key to return to menu");
-                Console.ReadKey();
-                Console.Clear();
+                return orders;
             }
             catch (Exception e)
             {
                 Console.WriteLine("Something went wrong.");
                 CustomLogger.Logger.LogError(e);
+                return new Order[0];
             }
         }
 
