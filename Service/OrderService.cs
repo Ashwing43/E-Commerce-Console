@@ -129,7 +129,7 @@ namespace ECommerce.Services
 
         public void ChangeOrderStatus()
         {
-            var orders = _orderRepository.GetAll().ToList();
+            var orders = _orderRepository.GetAll().Where(o => o.OrderStatus != OrderStatus.Cancelled && o.OrderStatus != OrderStatus.Delivered).ToList();
 
             if (orders.Count < 1)
             {

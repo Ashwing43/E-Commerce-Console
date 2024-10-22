@@ -206,7 +206,7 @@ namespace ECommerce.Controllers
 
                 foreach (var order in orders)
                 {
-                    Console.WriteLine($"Order ID: {order.Id}, User ID: {order.UserId}, Total Amount: {order.TotalAmount}");
+                    Console.WriteLine($"Order ID: {order.Id}, User ID: {order.UserId}, Total Amount: {order.TotalAmount}, Status: {order.OrderStatus}");
                 }
                 Console.WriteLine("\nPress any key to return to menu.");
                 Console.ReadKey();
