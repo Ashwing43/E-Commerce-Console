@@ -1,0 +1,61 @@
+# Ignore Visual Studio temporary files, build results, and
+# build directories.
+[Bb]in/
+[Oo]bj/
+.vscode/
+.vs/
+*.user
+*.suo
+*.log
+*.userprefs
+*.sqlite
+*.sqlite3
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Logs
+*.log
+logs/
+Debug/
+Release/
+
+# Database files
+*.mdf
+*.ldf
+
+# Resharper files
+_ReSharper*/
+*.DotSettings.user
+
+# Rider files
+.idea/
+
+# NUGET Packages
+*.nupkg
+*.snupkg
+.nuget/packages/
+.nuget/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Web server-related files
+.bundle/
+.sass-cache/
+
+# User-specific files
+*.DS_Store
+*.directory
+*.sln.ide
+*.sln.docstates
+
+# macOS
+.DS_Store
+*.swp
+
+# Build results
+*.dll
+*.exe
+*.obj
+*.pdb

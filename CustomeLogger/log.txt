@@ -1,0 +1,30 @@
+*********************************************************************
+Exception occured at: 14-10-2024 11:36:04 AM
+CustomExceptions.OrderNotFoundException: Order cannot be found
+   at MyApp.Services.OrderService.ChangeOrderStatus() in C:\Users\Coditas-Admin\Desktop\ashw\Service\OrderService.cs:line 148
+Message: ex.Message
+
+*********************************************************************
+Exception occured at: 14-10-2024 10:50:22 PM
+CustomExceptions.OrderNotFoundException: Order cannot be found
+   at MyApp.Services.OrderService.ChangeOrderStatus() in C:\Users\Coditas-Admin\Desktop\ashw\Service\OrderService.cs:line 149
+Message: ex.Message
+
+*********************************************************************
+Exception occured at: 15-10-2024 11:38:11 AM
+CustomExceptions.OrderNotFoundException: Order cannot be found
+   at MyApp.Services.OrderService.ChangeOrderStatus() in C:\Users\Coditas-Admin\Desktop\ashw\Service\OrderService.cs:line 122
+Message: ex.Message
+
+*********************************************************************
+Exception occured at: 15-10-2024 03:03:13 PM
+CustomExceptions.OrderNotFoundException: Order cannot be found
+   at MyApp.Services.OrderService.ChangeOrderStatus() in C:\Users\Coditas-Admin\Desktop\ashw\Service\OrderService.cs:line 122
+Message: ex.Message
+
+*********************************************************************
+Exception occured at: 21-10-2024 03:13:44 PM
+CustomExceptions.OrderNotFoundException: Order cannot be found
+   at MyApp.Services.OrderService.ChangeOrderStatus() in C:\Users\Coditas-Admin\Desktop\ashw\Service\OrderService.cs:line 137
+Message: ex.Message
+
