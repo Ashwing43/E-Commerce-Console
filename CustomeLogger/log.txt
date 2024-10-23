@@ -28,3 +28,9 @@ CustomExceptions.OrderNotFoundException: Order cannot be found
    at MyApp.Services.OrderService.ChangeOrderStatus() in C:\Users\Coditas-Admin\Desktop\ashw\Service\OrderService.cs:line 137
 Message: ex.Message
 
+*********************************************************************
+Exception occured at: 23-10-2024 10:09:58 AM
+CustomExceptions.OrderNotFoundException: Order cannot be found
+   at ECommerce.Services.OrderService.<>c__DisplayClass7_0.<GetOrderStatusAsync>b__0() in C:\Users\Coditas-Admin\Desktop\ashw\Service\OrderService.cs:line 108
+Message: ex.Message
+

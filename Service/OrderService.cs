@@ -24,7 +24,7 @@ namespace ECommerce.Services
         {
             try
             {
-                _orderRepository.Add(order);
+                Task.Run(() => _orderRepository.Add(order));
             }
             catch (Exception e)
             {
@@ -80,8 +80,19 @@ namespace ECommerce.Services
         {
             try
             {
-                GetAllOrdersByUserId(userId);
-                Console.WriteLine("Enter order Id to check status");
+                var orders = GetAllOrdersByUserId(userId);
+                foreach (Order o in orders)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine($"Order Id: {o.Id},  Amount:{o.TotalAmount},  Order Status: {o.OrderStatus}");
+                    Console.WriteLine($"Products:");
+                    foreach(Guid prodId in o.ProductIds)
+                    {
+                        Product p = _productRepository.GetById(prodId);
+                        Console.WriteLine($"Name: {p.Name}, Price: {p.Price}");
+                    }
+                }
+                Console.WriteLine("\nEnter order Id to check status");
                 var input = "";
                 Guid id = new Guid();
                 while (string.IsNullOrWhiteSpace(input))
