@@ -107,6 +107,10 @@ namespace ECommerce.Services
                         id = k;
                         break;
                     }
+                    else
+                    {
+                        input = "";
+                    }
                 }
 
                 Order order = _orderRepository.GetById(id);
