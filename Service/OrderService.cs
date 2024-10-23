@@ -98,6 +98,10 @@ namespace ECommerce.Services
                 while (string.IsNullOrWhiteSpace(input))
                 {
                     input = Console.ReadLine();
+                    if(input == "back"){
+                        Console.Clear();
+                        return;
+                    }
                     if (string.IsNullOrWhiteSpace(input))
                     {
                         Console.WriteLine("Input cannot be empty.");
@@ -165,6 +169,10 @@ namespace ECommerce.Services
             while (string.IsNullOrWhiteSpace(input))
             {
                 input = Console.ReadLine();
+                if(input == "back"){
+                    Console.Clear();
+                    return;
+                }
                 if (string.IsNullOrWhiteSpace(input))
                 {
                     Console.WriteLine("Input cannot be empty.");
@@ -192,6 +200,10 @@ namespace ECommerce.Services
                 while (true)
                 {
                     input = Console.ReadLine();
+                    if(input == "back"){
+                        Console.Clear();
+                        return;
+                    }
                     if (input == "1" || input == "2" || input == "3" || input == "4") break;
                     else
                     {

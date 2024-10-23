@@ -35,7 +35,7 @@ namespace ECommerce.Services
             {
                 Console.WriteLine("Something went wrong.");
                 CustomLogger.Logger.LogError(e);
-                throw e;
+                throw;
             }
         }
 

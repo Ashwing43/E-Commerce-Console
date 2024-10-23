@@ -32,6 +32,10 @@ namespace ECommerce.Controllers
                 while (string.IsNullOrWhiteSpace(name))
                 {
                     name = Console.ReadLine();
+                    if(name == "back") {
+                        Console.Clear();
+                        return;
+                    }
                     if (string.IsNullOrWhiteSpace(name))
                     {
                         Console.WriteLine("Name cannot be empty. Please try again.");
@@ -44,6 +48,10 @@ namespace ECommerce.Controllers
                 while (string.IsNullOrWhiteSpace(priceInput))
                 {
                     priceInput = Console.ReadLine();
+                    if(priceInput == "back") {
+                        Console.Clear();
+                        return;
+                    }
                     if (string.IsNullOrWhiteSpace(priceInput))
                     {
                         Console.WriteLine("Price cannot be empty, Please try again.");
@@ -65,6 +73,10 @@ namespace ECommerce.Controllers
                 while (string.IsNullOrWhiteSpace(quantityInput))
                 {
                     quantityInput = Console.ReadLine();
+                    if(quantityInput == "back") {
+                        Console.Clear();
+                        return;
+                    }
                     if (string.IsNullOrWhiteSpace(quantityInput))
                     {
                         Console.WriteLine("Quantity cannot be empty, Please try again.");
@@ -189,6 +201,10 @@ namespace ECommerce.Controllers
                 while (string.IsNullOrWhiteSpace(choice))
                 {
                     choice = Console.ReadLine();
+                    if(choice == "back") {
+                        Console.Clear();
+                        return;
+                    }
                     if (string.IsNullOrWhiteSpace(choice))
                     {
                         Console.WriteLine("Input cannot be empty.");
@@ -220,6 +236,10 @@ namespace ECommerce.Controllers
                 while (string.IsNullOrWhiteSpace(choice))
                 {
                     choice = Console.ReadLine();
+                    if(choice == "back") {
+                        Console.Clear();
+                        return;
+                    }
                     if (string.IsNullOrWhiteSpace(choice))
                     {
                         Console.WriteLine("Choice cannot be empty");
@@ -242,6 +262,10 @@ namespace ECommerce.Controllers
                     while (true)
                     {
                         var inp = Console.ReadLine();
+                        if(inp == "back") {
+                            Console.Clear();
+                            return;
+                        }
                         if (int.TryParse(inp, out int a) && a > 0)
                         {
                             value = a;
@@ -262,6 +286,10 @@ namespace ECommerce.Controllers
                     while (true)
                     {
                         var inp = Console.ReadLine();
+                        if(inp == "back") {
+                            Console.Clear();
+                            return;
+                        }
                         if (int.TryParse(inp, out int a) && a > 0)
                         {
                             value = a;
@@ -290,6 +318,10 @@ namespace ECommerce.Controllers
                     while (true)
                     {
                         var inp = Console.ReadLine();
+                        if(inp == "back") {
+                            Console.Clear();
+                            return;
+                        }
                         if (int.TryParse(inp, out int a) && a > 0)
                         {
                             value = a;

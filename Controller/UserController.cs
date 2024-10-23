@@ -30,6 +30,10 @@ namespace ECommerce.Controllers
                 while (string.IsNullOrWhiteSpace(choice) || flag)
                 {
                     choice = Console.ReadLine();
+                    if(choice == "back") {
+                        Console.Clear();
+                        return;
+                    }
                     if (string.IsNullOrWhiteSpace(choice) || !(choice == "1" || choice == "2"))
                     {
                         Console.WriteLine("Enter valid choice.");
@@ -49,6 +53,10 @@ namespace ECommerce.Controllers
                 while (string.IsNullOrWhiteSpace(name))
                 {
                     name = Console.ReadLine();
+                    if(name == "back") {
+                        Console.Clear();
+                        return;
+                    }
 
                     if (string.IsNullOrWhiteSpace(name))
                     {
@@ -61,6 +69,10 @@ namespace ECommerce.Controllers
                 while (string.IsNullOrWhiteSpace(email) || !email.IsValidEmail())
                 {
                     email = Console.ReadLine();
+                    if(email == "back") {
+                        Console.Clear();
+                        return;
+                    }
                     if (string.IsNullOrWhiteSpace(email))
                     {
                         Console.WriteLine("Email cannot be empty. Please try again.");
@@ -81,7 +93,7 @@ namespace ECommerce.Controllers
                 while (string.IsNullOrWhiteSpace(password))
                 {
                     password = Utils.PasswordReader.ReadPassword();
-
+                    if(password == "back") return;
                     if (string.IsNullOrWhiteSpace(password))
                     {
                         Console.WriteLine("Password cannot be empty. Please try again.");
@@ -117,6 +129,10 @@ namespace ECommerce.Controllers
                 while (string.IsNullOrWhiteSpace(email))
                 {
                     email = Console.ReadLine();
+                    if(email == "back") {
+                        Console.Clear();
+                        return null;
+                    }
                     if (string.IsNullOrWhiteSpace(email))
                     {
                         Console.WriteLine("Email cannot be empty. Please try again.");
@@ -128,6 +144,7 @@ namespace ECommerce.Controllers
                 while (string.IsNullOrWhiteSpace(password))
                 {
                     password = Utils.PasswordReader.ReadPassword();
+                    if(password == "back") return null;
 
                     if (string.IsNullOrWhiteSpace(password))
                     {
@@ -184,6 +201,10 @@ namespace ECommerce.Controllers
                 while (string.IsNullOrWhiteSpace(input))
                 {
                     input = Console.ReadLine();
+                    if(input == "back") {
+                        Console.Clear();
+                        return;
+                    }
                     if (string.IsNullOrWhiteSpace(input) || !(input == "1" || input == "2" || input == "3"))
                     {
                         Console.WriteLine("Enter valid choice");
@@ -198,6 +219,10 @@ namespace ECommerce.Controllers
                     while (string.IsNullOrWhiteSpace(name))
                     {
                         name = Console.ReadLine();
+                        if(name == "back") {
+                            Console.Clear();
+                            return;
+                        }
                         if (string.IsNullOrWhiteSpace(name))
                         {
                             Console.WriteLine("Input cannot be empty.");
@@ -213,6 +238,10 @@ namespace ECommerce.Controllers
                     while (string.IsNullOrWhiteSpace(email))
                     {
                         email = Console.ReadLine();
+                        if(email == "back") {
+                            Console.Clear();
+                            return;
+                        }
                         if (string.IsNullOrWhiteSpace(email))
                         {
                             Console.WriteLine("Input cannot be empty");
@@ -233,7 +262,7 @@ namespace ECommerce.Controllers
                     while (string.IsNullOrWhiteSpace(newPassword))
                     {
                         newPassword = Utils.PasswordReader.ReadPassword();
-
+                        if(newPassword == "back") return;
                         if (string.IsNullOrWhiteSpace(newPassword))
                         {
                             Console.WriteLine("Password cannot be empty. Please try again.");
@@ -250,7 +279,7 @@ namespace ECommerce.Controllers
                     while (string.IsNullOrWhiteSpace(password))
                     {
                         password = Utils.PasswordReader.ReadPassword();
-
+                        if(password == "back") return;
                         if (string.IsNullOrWhiteSpace(password))
                         {
                             Console.WriteLine("Password cannot be empty. Please try again.");

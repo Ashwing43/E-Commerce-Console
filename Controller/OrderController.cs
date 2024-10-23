@@ -68,6 +68,10 @@ namespace ECommerce.Controllers
                     while (string.IsNullOrWhiteSpace(choice))
                     {
                         choice = Console.ReadLine();
+                        if(choice == "back") {
+                            Console.Clear();
+                            return;
+                        }
                         if (string.IsNullOrWhiteSpace(choice))
                         {
                             Console.WriteLine("Input cannot be empty.");
@@ -92,6 +96,10 @@ namespace ECommerce.Controllers
                         {
                             bool flag = false;
                             input = Console.ReadLine();
+                            if(input == "back") {
+                                Console.Clear();
+                                return;
+                            }
                             if (string.IsNullOrWhiteSpace(input))
                             {
                                 Console.WriteLine("Input cannot be empty.");
@@ -147,7 +155,12 @@ namespace ECommerce.Controllers
                             bool isInputCorrect;
                             do
                             {
-                                isInputCorrect = int.TryParse(Console.ReadLine(), out int ch);
+                                var input = Console.ReadLine();
+                                if(input == "back") {
+                                    Console.Clear();
+                                    return;
+                                }
+                                isInputCorrect = int.TryParse(input, out int ch);
                                 if (isInputCorrect) addressChoice = ch;
 
                                 if (!(addressChoice <= addresses.Count && addressChoice >= 0))
@@ -161,6 +174,7 @@ namespace ECommerce.Controllers
                             if (addressChoice == addresses.Count)
                             {
                                 address = Utils.AddressReader.GetAddress();
+                                if(address.Street == "back") return;
                                 addresses.Add(address);
                             }
                             else
@@ -289,6 +303,10 @@ namespace ECommerce.Controllers
                 while (string.IsNullOrWhiteSpace(input))
                 {
                     input = Console.ReadLine();
+                    if(input == "back") {
+                        Console.Clear();
+                        return;
+                    }
                     if (string.IsNullOrWhiteSpace(input))
                     {
                         Console.WriteLine("Input cannot be empty.");

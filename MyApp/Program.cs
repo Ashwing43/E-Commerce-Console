@@ -5,6 +5,7 @@ using ECommerce.Controllers;
 using ECommerce.Models;
 using ECommerce.Repositories;
 using ECommerce.Services;
+using System.Globalization;
 
 class Program
 {
@@ -34,7 +35,6 @@ class Program
             Console.WriteLine("2. Login");
             Console.WriteLine("3. Exit");
             var choice = Console.ReadLine();
-
             if (choice == "1")
             {
                 userController.SignUp();
@@ -75,6 +75,12 @@ class Program
                 Loader.Loader.RunExit();
                 Console.Clear();
                 break;
+            }
+            else if(choice == "back")
+            {
+                Console.WriteLine("Cannot go back from main menu. Please exit.");
+                Thread.Sleep(1000);
+                Console.Clear();
             }
             else
             {
@@ -139,6 +145,13 @@ class Program
                     Console.Clear();
                     breaker = true;
                     break;
+
+                case "back":
+                    Console.WriteLine("Cannot go back from admin menu. Please logout.");
+                    Thread.Sleep(1000);
+                    Console.Clear();
+                    break;
+
                 default:
                     Console.WriteLine("Enter valid choice.");
                     Thread.Sleep(500);
@@ -203,6 +216,13 @@ class Program
                     breaker = true;
                     Console.Clear();
                     break;
+
+                case "back":
+                    Console.WriteLine("Cannot go back from customer menu. Please logout.");
+                    Thread.Sleep(1000);
+                    Console.Clear();
+                    break;
+
                 default:
                     Console.WriteLine("Enter valid choice.");
                     Thread.Sleep(500);

@@ -2,6 +2,6 @@
 {
     public class Constants
     {
-        public const string logPath = "C:\\Users\\Coditas-Admin\\Desktop\\ashw\\CustomeLogger\\log.txt";
+        public const string logPath = "log.txt";
     }
 }
