@@ -50,7 +50,13 @@ class Program
                     continue;
                 }
 
-                if (loggedInUser.Role == UserRole.Admin)
+				if (loggedInUser.Name == "back")
+				{
+					Console.Clear();
+					continue;
+				}
+
+				if (loggedInUser.Role == UserRole.Admin)
                 {
                     AdminMenu(loggedInUser.Id, productController, userController, orderController);
                 }
