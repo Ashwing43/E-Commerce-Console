@@ -65,7 +65,6 @@ class Program
                     Customer c = (Customer)loggedInUser;
                     if(c.Notifications.Count > 0)
                     {
-                        int cnt = 0;
                         Console.WriteLine("\n****************New Notifications**********");
                         while (c.Notifications.Count > 0)
                         {
@@ -198,7 +197,7 @@ class Program
                     break;
 
                 case "3":
-                    orderController.ShowAllOrders(customerId);
+                    orderController.ShowAllOrdersByUserId(customerId);
                     break;
 
                 case "4":
@@ -214,7 +213,7 @@ class Program
                     break;
 
                 case "7":
-                    orderController.GetOrderStatus(customerId);
+                    orderController.DisplayOrderStatus(customerId);
                     break;
 
                 case "8":

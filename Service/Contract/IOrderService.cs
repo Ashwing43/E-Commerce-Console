@@ -11,8 +11,6 @@ namespace ECommerce.Services
 
         IEnumerable<Order> GetAllOrdersByUserId(Guid UserId);
 
-        void GetOrderStatusAsync(Guid userId);
-
         public void ChangeOrderStatus();
 
 		public OrderProcessedEventHandler OnOrderProcessed { set; get; }

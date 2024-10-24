@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using CustomExceptions;
+using ECommerce.Repositories;
 
 namespace ECommerce.Controllers
 {
@@ -232,11 +233,11 @@ namespace ECommerce.Controllers
             }
         }
 
-        public void ShowAllOrders(Guid UserId)
+        public void ShowAllOrdersByUserId(Guid userId)
         {
             try
             {
-                var orders = _orderService.GetAllOrdersByUserId(UserId);
+                var orders = _orderService.GetAllOrdersByUserId(userId);
                 foreach (var order in orders)
                 {
                     Console.WriteLine($"\nOrder ID: {order.Id}, Total Amount: {order.TotalAmount}, Status: {order.OrderStatus}");
@@ -252,18 +253,75 @@ namespace ECommerce.Controllers
             }
         }
 
-        public void GetOrderStatus(Guid UserId)
+        public void DisplayOrderStatus(Guid userId)
         {
-            try
-            {
-                _orderService.GetOrderStatusAsync(UserId);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Something went wrong.");
-                CustomLogger.Logger.LogError(e);
-            }
-        }
+			try
+			{
+				var orders = _orderService.GetAllOrdersByUserId(userId);
+				foreach (Order o in orders)
+				{
+					Console.WriteLine();
+					Console.WriteLine($"Order Id: {o.Id},  Amount:{o.TotalAmount},  Order Status: {o.OrderStatus}");
+					Console.WriteLine($"Products:");
+					foreach (Guid prodId in o.ProductIds)
+					{
+						Product p = _productService.GetProductById(prodId);
+						Console.WriteLine($"Name: {p.Name}, Price: {p.Price}");
+					}
+				}
+				Console.WriteLine("\nEnter order Id to check status");
+				var input = "";
+				Guid id = new Guid();
+				while (string.IsNullOrWhiteSpace(input))
+				{
+					input = Console.ReadLine();
+					if (input == "back")
+					{
+						Console.Clear();
+						return;
+					}
+					if (string.IsNullOrWhiteSpace(input))
+					{
+						Console.WriteLine("Input cannot be empty.");
+					}
+					else if (Guid.TryParse(input, out Guid k))
+					{
+						id = k;
+						break;
+					}
+					else
+					{
+						input = "";
+					}
+				}
+
+				Order order = _orderService.GetOrderById(id);
+				try
+				{
+					if (order == null)
+					{
+						throw new OrderNotFoundException();
+					}
+					Console.WriteLine($"Order status is {order.OrderStatus}");
+				}
+				catch (OrderNotFoundException ex)
+				{
+					Console.WriteLine("Order not found.");
+					CustomLogger.Logger.LogError(ex);
+				}
+				finally
+				{
+					Console.WriteLine("\nPress any key to return to menu.");
+					Console.ReadKey();
+					Console.Clear();
+				}
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("Something went wrong.");
+				CustomLogger.Logger.LogError(e);
+			}
+		}
 
         public void ChangeOrderStatus()
         {
