@@ -50,7 +50,7 @@ class Program
                     continue;
                 }
 
-				if (loggedInUser.Name == "back")
+				if (loggedInUser.Name == Constants.Constants.BACK)
 				{
 					Console.Clear();
 					continue;
@@ -81,7 +81,7 @@ class Program
                 Console.Clear();
                 break;
             }
-            else if(choice == "back")
+            else if(choice == Constants.Constants.BACK)
             {
                 Console.WriteLine("Cannot go back from main menu. Please exit.");
                 Thread.Sleep(1000);
@@ -151,7 +151,7 @@ class Program
                     breaker = true;
                     break;
 
-                case "back":
+                case Constants.Constants.BACK:
                     Console.WriteLine("Cannot go back from admin menu. Please logout.");
                     Thread.Sleep(1000);
                     Console.Clear();
@@ -222,7 +222,7 @@ class Program
                     Console.Clear();
                     break;
 
-                case "back":
+                case Constants.Constants.BACK:
                     Console.WriteLine("Cannot go back from customer menu. Please logout.");
                     Thread.Sleep(1000);
                     Console.Clear();

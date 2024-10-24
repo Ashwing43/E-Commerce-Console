@@ -30,7 +30,7 @@ namespace ECommerce.Controllers
 				while (string.IsNullOrWhiteSpace(choice) || flag)
 				{
 					choice = Console.ReadLine();
-					if (choice == "back")
+					if (choice == Constants.Constants.BACK)
 					{
 						Console.Clear();
 						return;
@@ -54,7 +54,7 @@ namespace ECommerce.Controllers
 				while (string.IsNullOrWhiteSpace(name))
 				{
 					name = Console.ReadLine();
-					if (name == "back")
+					if (name == Constants.Constants.BACK)
 					{
 						Console.Clear();
 						return;
@@ -71,7 +71,7 @@ namespace ECommerce.Controllers
 				while (string.IsNullOrWhiteSpace(email) || !email.IsValidEmail())
 				{
 					email = Console.ReadLine();
-					if (email == "back")
+					if (email == Constants.Constants.BACK)
 					{
 						Console.Clear();
 						return;
@@ -96,7 +96,7 @@ namespace ECommerce.Controllers
 				while (string.IsNullOrWhiteSpace(password))
 				{
 					password = Utils.PasswordReader.ReadPassword();
-					if (password == "back") return;
+					if (password == Constants.Constants.BACK) return;
 					if (string.IsNullOrWhiteSpace(password))
 					{
 						Console.WriteLine("Password cannot be empty. Please try again.");
@@ -132,10 +132,10 @@ namespace ECommerce.Controllers
 				while (string.IsNullOrWhiteSpace(email))
 				{
 					email = Console.ReadLine();
-					if (email == "back")
+					if (email == Constants.Constants.BACK)
 					{
 						Console.Clear();
-						return new Admin() { Name = "back" }; ;
+						return new Admin() { Name = Constants.Constants.BACK }; ;
 					}
 					if (string.IsNullOrWhiteSpace(email))
 					{
@@ -148,10 +148,10 @@ namespace ECommerce.Controllers
 				while (string.IsNullOrWhiteSpace(password))
 				{
 					password = Utils.PasswordReader.ReadPassword();
-					if (password == "back")
+					if (password == Constants.Constants.BACK)
 					{
 						Console.Clear();
-						return new Admin() { Name = "back" };
+						return new Admin() { Name = Constants.Constants.BACK };
 					}
 
 					if (string.IsNullOrWhiteSpace(password))
@@ -209,7 +209,7 @@ namespace ECommerce.Controllers
 				while (string.IsNullOrWhiteSpace(input))
 				{
 					input = Console.ReadLine();
-					if (input == "back")
+					if (input == Constants.Constants.BACK)
 					{
 						Console.Clear();
 						return;
@@ -228,7 +228,7 @@ namespace ECommerce.Controllers
 					while (string.IsNullOrWhiteSpace(name))
 					{
 						name = Console.ReadLine();
-						if (name == "back")
+						if (name == Constants.Constants.BACK)
 						{
 							Console.Clear();
 							return;
@@ -248,7 +248,7 @@ namespace ECommerce.Controllers
 					while (string.IsNullOrWhiteSpace(email))
 					{
 						email = Console.ReadLine();
-						if (email == "back")
+						if (email == Constants.Constants.BACK)
 						{
 							Console.Clear();
 							return;
@@ -273,7 +273,7 @@ namespace ECommerce.Controllers
 					while (string.IsNullOrWhiteSpace(newPassword))
 					{
 						newPassword = Utils.PasswordReader.ReadPassword();
-						if (newPassword == "back") return;
+						if (newPassword == Constants.Constants.BACK) return;
 						if (string.IsNullOrWhiteSpace(newPassword))
 						{
 							Console.WriteLine("Password cannot be empty. Please try again.");
@@ -290,7 +290,7 @@ namespace ECommerce.Controllers
 					while (string.IsNullOrWhiteSpace(password))
 					{
 						password = Utils.PasswordReader.ReadPassword();
-						if (password == "back") return;
+						if (password == Constants.Constants.BACK) return;
 						if (string.IsNullOrWhiteSpace(password))
 						{
 							Console.WriteLine("Password cannot be empty. Please try again.");

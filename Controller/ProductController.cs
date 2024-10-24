@@ -32,7 +32,7 @@ namespace ECommerce.Controllers
                 while (string.IsNullOrWhiteSpace(name))
                 {
                     name = Console.ReadLine();
-                    if(name == "back") {
+                    if(name == Constants.Constants.BACK) {
                         Console.Clear();
                         return;
                     }
@@ -48,7 +48,7 @@ namespace ECommerce.Controllers
                 while (string.IsNullOrWhiteSpace(priceInput))
                 {
                     priceInput = Console.ReadLine();
-                    if(priceInput == "back") {
+                    if(priceInput == Constants.Constants.BACK) {
                         Console.Clear();
                         return;
                     }
@@ -73,7 +73,7 @@ namespace ECommerce.Controllers
                 while (string.IsNullOrWhiteSpace(quantityInput))
                 {
                     quantityInput = Console.ReadLine();
-                    if(quantityInput == "back") {
+                    if(quantityInput == Constants.Constants.BACK) {
                         Console.Clear();
                         return;
                     }
@@ -201,7 +201,7 @@ namespace ECommerce.Controllers
                 while (string.IsNullOrWhiteSpace(choice))
                 {
                     choice = Console.ReadLine();
-                    if(choice == "back") {
+                    if(choice == Constants.Constants.BACK) {
                         Console.Clear();
                         return;
                     }
@@ -236,7 +236,7 @@ namespace ECommerce.Controllers
                 while (string.IsNullOrWhiteSpace(choice))
                 {
                     choice = Console.ReadLine();
-                    if(choice == "back") {
+                    if(choice == Constants.Constants.BACK) {
                         Console.Clear();
                         return;
                     }
@@ -262,7 +262,7 @@ namespace ECommerce.Controllers
                     while (true)
                     {
                         var inp = Console.ReadLine();
-                        if(inp == "back") {
+                        if(inp == Constants.Constants.BACK) {
                             Console.Clear();
                             return;
                         }
@@ -286,7 +286,7 @@ namespace ECommerce.Controllers
                     while (true)
                     {
                         var inp = Console.ReadLine();
-                        if(inp == "back") {
+                        if(inp == Constants.Constants.BACK) {
                             Console.Clear();
                             return;
                         }
@@ -318,7 +318,7 @@ namespace ECommerce.Controllers
                     while (true)
                     {
                         var inp = Console.ReadLine();
-                        if(inp == "back") {
+                        if(inp == Constants.Constants.BACK) {
                             Console.Clear();
                             return;
                         }

@@ -100,7 +100,7 @@ namespace ECommerce.Services
 			while (string.IsNullOrWhiteSpace(input))
 			{
 				input = Console.ReadLine();
-				if (input == "back")
+				if (input == Constants.Constants.BACK)
 				{
 					Console.Clear();
 					return;
@@ -132,7 +132,7 @@ namespace ECommerce.Services
 				while (true)
 				{
 					input = Console.ReadLine();
-					if (input == "back")
+					if (input == Constants.Constants.BACK)
 					{
 						Console.Clear();
 						return;

@@ -19,7 +19,7 @@ namespace Utils
             while (string.IsNullOrWhiteSpace(street))
             {
                 street = Console.ReadLine();
-                if(street == "back") return new Address(){Street = "back"};
+                if(street == Constants.Constants.BACK) return new Address(){Street = Constants.Constants.BACK};
                 if (string.IsNullOrWhiteSpace(street))
                 {
                     Console.WriteLine("Input cannot be empty.");
@@ -32,7 +32,7 @@ namespace Utils
             while (string.IsNullOrWhiteSpace(city))
             {
                 city = Console.ReadLine();
-                if(city == "back") return new Address(){Street = "back"};
+                if(city == Constants.Constants.BACK) return new Address(){Street = Constants.Constants.BACK};
                 if (string.IsNullOrWhiteSpace(city))
                 {
                     Console.WriteLine("Input cannot be empty.");
@@ -45,7 +45,7 @@ namespace Utils
             while (string.IsNullOrWhiteSpace(zip))
             {
                 zip = Console.ReadLine();
-                if(zip == "back") return new Address(){Street = "back"};
+                if(zip == Constants.Constants.BACK) return new Address(){Street = Constants.Constants.BACK};
                 if (string.IsNullOrWhiteSpace(zip))
                 {
                     Console.WriteLine("Input cannot be empty.");

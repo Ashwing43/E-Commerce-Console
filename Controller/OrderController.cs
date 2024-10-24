@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using CustomExceptions;
 using ECommerce.Repositories;
+using Constants;
 
 namespace ECommerce.Controllers
 {
@@ -68,7 +69,7 @@ namespace ECommerce.Controllers
                     while (string.IsNullOrWhiteSpace(choice))
                     {
                         choice = Console.ReadLine();
-                        if(choice == "back") {
+                        if(choice == Constants.Constants.BACK) {
                             Console.Clear();
                             return;
                         }
@@ -96,7 +97,7 @@ namespace ECommerce.Controllers
                         {
                             bool flag = false;
                             input = Console.ReadLine();
-                            if(input == "back") {
+                            if(input == Constants.Constants.BACK) {
                                 Console.Clear();
                                 return;
                             }
@@ -156,7 +157,7 @@ namespace ECommerce.Controllers
                             do
                             {
                                 var input = Console.ReadLine();
-                                if(input == "back") {
+                                if(input == Constants.Constants.BACK) {
                                     Console.Clear();
                                     return;
                                 }
@@ -174,7 +175,7 @@ namespace ECommerce.Controllers
                             if (addressChoice == addresses.Count)
                             {
                                 address = Utils.AddressReader.GetAddress();
-                                if(address.Street == "back") return;
+                                if(address.Street == Constants.Constants.BACK) return;
                                 addresses.Add(address);
                             }
                             else
@@ -275,7 +276,7 @@ namespace ECommerce.Controllers
 				while (string.IsNullOrWhiteSpace(input))
 				{
 					input = Console.ReadLine();
-					if (input == "back")
+					if (input == Constants.Constants.BACK)
 					{
 						Console.Clear();
 						return;
@@ -360,7 +361,7 @@ namespace ECommerce.Controllers
                 while (string.IsNullOrWhiteSpace(input))
                 {
                     input = Console.ReadLine();
-                    if(input == "back") {
+                    if(input == Constants.Constants.BACK) {
                         Console.Clear();
                         return;
                     }
