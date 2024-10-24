@@ -1,5 +1,5 @@
+using Delegates;
 using ECommerce.Models;
-using static ECommerce.Services.OrderService;
 
 namespace ECommerce.Services
 {
@@ -15,6 +15,6 @@ namespace ECommerce.Services
 
         public void ChangeOrderStatus();
 
-        public delegate void OrderProcessedEventHandler();
-    }
+		public OrderProcessedEventHandler OnOrderProcessed { set; get; }
+	}
 }

@@ -21,8 +21,7 @@ namespace ECommerce.Controllers
             _userService = userService;
             _productService = productService;
 
-            OrderService orderService1 = (OrderService)orderService;
-            orderService1.OnOrderProcessed += HandleOrderProcessed;
+            orderService.OnOrderProcessed += HandleOrderProcessed;
         }
 
         public void PlaceOrder(Guid userId)

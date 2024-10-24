@@ -4,10 +4,11 @@ using Microsoft.Extensions.Logging;
 using ECommerce.Models;
 using ECommerce.Repositories;
 using System.Xml.Serialization;
+using Delegates;
+
 
 namespace ECommerce.Services
 {
-    public delegate void OrderProcessedEventHandler(Order o, string status);
     public class OrderService : IOrderService
     {
 
@@ -276,7 +277,6 @@ namespace ECommerce.Services
                         }
                         break;
                 }
-
                 if (isStatusChanged)
                 {
                     OnOrderProcessed.Invoke(order, status);
@@ -301,7 +301,7 @@ namespace ECommerce.Services
             }
         }
 
-        public OrderProcessedEventHandler OnOrderProcessed;
+        public OrderProcessedEventHandler OnOrderProcessed { set; get; }
 
         public event OrderProcessedEventHandler myEvent
         {
@@ -316,6 +316,5 @@ namespace ECommerce.Services
                 this.OnOrderProcessed(o, status);
             }
         }
-
     }
 }
