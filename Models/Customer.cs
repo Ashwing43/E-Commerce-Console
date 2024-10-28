@@ -9,21 +9,21 @@ using System.Threading.Tasks;
 
 namespace Models
 {
-    public class Customer : User
-    {
-        #region Fields
-        public List<Address> Addresses { get; set; } = new List<Address>();
-        
-        public Queue<string> Notifications { get; set; } = new Queue<string>();
-        #endregion
+	public class Customer : User
+	{
+		#region Fields
+		public List<Address> Addresses { get; set; } = new List<Address>();
 
-        #region Methods
-        public override void DisplayInfo()
-        {
-            Console.WriteLine("\nCustomer Info: ");
-            Console.WriteLine($"Customer name : {this.Name}");
-            Console.WriteLine($"Customer email : {this.Email}");
-        }
-        #endregion
-    }
+		public Queue<string> Notifications { get; set; } = new Queue<string>();
+		#endregion
+
+		#region Methods
+		public override void DisplayInfo()
+		{
+			Console.WriteLine("\nCustomer Info: ");
+			Console.WriteLine($"Customer name : {this.Name}");
+			Console.WriteLine($"Customer email : {this.Email}");
+		}
+		#endregion
+	}
 }

@@ -8,16 +8,15 @@ using System.Threading.Tasks;
 
 namespace Models
 {
-    public class Admin : User
-    {
-        #region Methods
-        public override void DisplayInfo()
-        {
-            Console.WriteLine("\nAdmin Info: ");
-            Console.WriteLine($"Admin name : {this.Name}");
-            Console.WriteLine($"Admin email : {this.Email}");
-        }
-        #endregion
-
-    }
+	public class Admin : User
+	{
+		#region Methods
+		public override void DisplayInfo()
+		{
+			Console.WriteLine("\nAdmin Info: ");
+			Console.WriteLine($"Admin name : {this.Name}");
+			Console.WriteLine($"Admin email : {this.Email}");
+		}
+		#endregion
+	}
 }

@@ -1,6 +1,5 @@
 using CustomLogger;
 using CustomExceptions;
-using Microsoft.Extensions.Logging;
 using ECommerce.Models;
 using ECommerce.Repositories;
 using System.Xml.Serialization;
@@ -95,11 +94,11 @@ namespace ECommerce.Services
 				Console.WriteLine($"Order Id: {o.Id},  User Id: {o.UserId},  Amount:{o.TotalAmount},  Order Status: {o.OrderStatus}");
 			}
 			Console.WriteLine("Enter order id");
-			var input = "";
-			Guid id = new Guid();
-			while (string.IsNullOrWhiteSpace(input))
+			Guid id;
+
+			while (true)
 			{
-				input = Console.ReadLine();
+				var input = Console.ReadLine();
 				if (input == Constants.Constants.BACK)
 				{
 					Console.Clear();
@@ -108,19 +107,23 @@ namespace ECommerce.Services
 				if (string.IsNullOrWhiteSpace(input))
 				{
 					Console.WriteLine("Input cannot be empty.");
+					continue; 
 				}
-				else if (Guid.TryParse(input, out Guid k))
+				if (Guid.TryParse(input, out Guid k))
 				{
 					id = k;
 					break;
 				}
+				Console.WriteLine("Invalid id format");
 			}
 
 			try
 			{
 				Order order = _orderRepository.GetById(id);
 				if (order is null)
+				{
 					throw new OrderNotFoundException();
+				}
 
 				Console.WriteLine("Change status to?");
 				Console.WriteLine("1. Processed");
@@ -128,7 +131,7 @@ namespace ECommerce.Services
 				Console.WriteLine("3. Delivered");
 				OrderStatus newStatus = OrderStatus.Pending;
 				bool isStatusChanged = false;
-				input = "";
+				var input = "";
 				while (true)
 				{
 					input = Console.ReadLine();
@@ -166,7 +169,7 @@ namespace ECommerce.Services
 						if (order.OrderStatus == OrderStatus.Pending)
 						{
 							order.OrderStatus = OrderStatus.Processed;
-							status = "processed";
+							status = OrderStatus.Processed.ToString().ToLower();
 							isStatusChanged = true;
 						}
 						else
@@ -179,7 +182,7 @@ namespace ECommerce.Services
 						if (order.OrderStatus == OrderStatus.Processed)
 						{
 							order.OrderStatus = OrderStatus.Shipped;
-							status = "shipped";
+							status = OrderStatus.Shipped.ToString().ToLower();
 							isStatusChanged = true;
 						}
 						else if (order.OrderStatus == OrderStatus.Pending)
@@ -196,7 +199,7 @@ namespace ECommerce.Services
 						if (order.OrderStatus == OrderStatus.Shipped)
 						{
 							order.OrderStatus = OrderStatus.Delivered;
-							status = "delivered";
+							status = OrderStatus.Delivered.ToString().ToLower();
 							isStatusChanged = true;
 						}
 						else if (order.OrderStatus == OrderStatus.Pending || order.OrderStatus == OrderStatus.Processed)
@@ -211,7 +214,10 @@ namespace ECommerce.Services
 				}
 				if (isStatusChanged)
 				{
-					OnOrderProcessed.Invoke(order, status);
+					if (OnOrderProcessed != null)
+					{
+						OnOrderProcessed.Invoke(order, status);
+					}
 				}
 				Console.WriteLine("\nPress any key to return to menu.");
 				Console.ReadKey();

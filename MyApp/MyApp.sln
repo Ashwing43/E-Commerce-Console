@@ -23,11 +23,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utils", "..\Utils\Utils.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomExceptions", "..\CustomExceptions\CustomExceptions.csproj", "{07052BA8-FC4F-41DC-8D62-AD24AA248869}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomLogger", "..\CustomeLogger\CustomLogger.csproj", "{02A0E2E5-1550-430B-A27E-9AA85DC272CF}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Constants", "..\Constants\Constants.csproj", "{04B7DB4F-87DD-4CC5-96DB-ADB8C5B01870}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Delegates", "..\Delegates\Delegates.csproj", "{0AB403F9-70BF-4506-BF4F-3BBC404CEFB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Delegates", "..\Delegates\Delegates.csproj", "{0AB403F9-70BF-4506-BF4F-3BBC404CEFB9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomLogger", "..\CustomLogger\CustomLogger.csproj", "{2ABA69EF-5A55-4A81-ADCD-4DEED50E7CAF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,10 +75,6 @@ Global
 		{07052BA8-FC4F-41DC-8D62-AD24AA248869}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07052BA8-FC4F-41DC-8D62-AD24AA248869}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07052BA8-FC4F-41DC-8D62-AD24AA248869}.Release|Any CPU.Build.0 = Release|Any CPU
-		{02A0E2E5-1550-430B-A27E-9AA85DC272CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{02A0E2E5-1550-430B-A27E-9AA85DC272CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{02A0E2E5-1550-430B-A27E-9AA85DC272CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{02A0E2E5-1550-430B-A27E-9AA85DC272CF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{04B7DB4F-87DD-4CC5-96DB-ADB8C5B01870}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{04B7DB4F-87DD-4CC5-96DB-ADB8C5B01870}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04B7DB4F-87DD-4CC5-96DB-ADB8C5B01870}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -87,6 +83,10 @@ Global
 		{0AB403F9-70BF-4506-BF4F-3BBC404CEFB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0AB403F9-70BF-4506-BF4F-3BBC404CEFB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0AB403F9-70BF-4506-BF4F-3BBC404CEFB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2ABA69EF-5A55-4A81-ADCD-4DEED50E7CAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2ABA69EF-5A55-4A81-ADCD-4DEED50E7CAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2ABA69EF-5A55-4A81-ADCD-4DEED50E7CAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2ABA69EF-5A55-4A81-ADCD-4DEED50E7CAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

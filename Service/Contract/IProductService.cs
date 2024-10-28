@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Services
 {
-    public interface IProductService
-    {
-        void AddProduct(Product product);
-        Product GetProductById(Guid id);
-        IEnumerable<Product> GetAllProducts();
-    }
+	public interface IProductService
+	{
+		void AddProduct(Product product);
+		Product GetProductById(Guid id);
+		IEnumerable<Product> GetAllProducts();
+	}
 }

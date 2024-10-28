@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Repositories
 {
-    public interface IProductRepository : IRepository<Product>
-    {
-        void Add(Product product);
-        Product GetById(Guid id);
-        IEnumerable<Product> GetAll();
-    }
+	public interface IProductRepository : IRepository<Product>
+	{
+		void Add(Product product);
+		Product GetById(Guid id);
+		IEnumerable<Product> GetAll();
+	}
 }

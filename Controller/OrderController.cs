@@ -11,251 +11,160 @@ using Constants;
 
 namespace ECommerce.Controllers
 {
-    public class OrderController
-    {
-        private readonly IOrderService _orderService;
-        private readonly IUserService _userService;
-        private readonly IProductService _productService;
+	public class OrderController
+	{
+		private readonly IOrderService _orderService;
+		private readonly IUserService _userService;
+		private readonly IProductService _productService;
 
-        public OrderController(IOrderService orderService, IUserService userService, IProductService productService)
-        {
-            _orderService = orderService;
-            _userService = userService;
-            _productService = productService;
+		public OrderController(IOrderService orderService, IUserService userService, IProductService productService)
+		{
+			_orderService = orderService;
+			_userService = userService;
+			_productService = productService;
 
-            orderService.OnOrderProcessed += HandleOrderProcessed;
-        }
+			_orderService.OnOrderProcessed += HandleOrderProcessed;
+		}
 
-        public void PlaceOrder(Guid userId)
-        {
-            try
-            {
-                Customer user = (Customer)_userService.GetUserById(userId);
+		public void PlaceOrder(Guid userId)
+		{
+			try
+			{
+				Customer user = (Customer)_userService.GetUserById(userId);
 
-                if (user.Role != UserRole.Customer)
-                {
-                    Console.WriteLine("Only customers can place orders.");
-                    return;
-                }
+				if (user.Role != UserRole.Customer)
+				{
+					Console.WriteLine("Only customers can place orders.");
+					return;
+				}
+				List<Product> products = _productService.GetAllProducts().ToList();
 
-                Console.WriteLine("Available products");
-                List<Product> products = _productService.GetAllProducts().ToList();
+				DisplayAvailableProducts(products);
 
-                if (products.Count <= 0)
-                {
-                    Console.WriteLine("No products available");
-                    return;
-                }
+				var productSerialNumbers = new List<int>();
+				List<Guid> productIds = new List<Guid>();
+				decimal totalAmount = 0;
 
-                int i = 1;
-                foreach (var p in products)
-                {
-                    Console.Write($"sr no. {i++},  ");
-                    p.DisplayInfo();
-                }
-                Console.WriteLine();
+				while (true)
+				{
+					Console.WriteLine("Enter a choice");
+					Console.WriteLine("1. Add product");
+					Console.WriteLine("2. Finish order");
 
-                var productSr = new List<int>();
-                List<Guid> productIds = new List<Guid>();
-                decimal totalAmount = 0;
+					var choice = GetChoice();
+					if (choice == Constants.Constants.BACK)
+					{
+						Console.Clear();
+						return;
+					}
 
-                while (true)
-                {
-                    Console.WriteLine("Enter a choice");
-                    Console.WriteLine("1.Add product");
-                    Console.WriteLine("2.Finish order");
 
-                    var choice = "";
-                    while (string.IsNullOrWhiteSpace(choice))
-                    {
-                        choice = Console.ReadLine();
-                        if(choice == Constants.Constants.BACK) {
-                            Console.Clear();
-                            return;
-                        }
-                        if (string.IsNullOrWhiteSpace(choice))
-                        {
-                            Console.WriteLine("Input cannot be empty.");
-                        }
-                        else if (choice == "1" || choice == "2")
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            Console.WriteLine("Enter valid choice.");
-                        }
-                    }
+					if (choice == Choice_Constants.ONE)
+					{
+						Console.WriteLine("Enter Product sr. no. to order:");
 
-                    if (choice == "1")
-                    {
-                        Console.WriteLine("Enter Product sr. no. to order:");
+						int serialNumber = GetSerialNumber(products.Count);
+						if (serialNumber == -1) return;
 
-                        var input = "";
-                        int sr = 0;
-                        while (true)
-                        {
-                            bool flag = false;
-                            input = Console.ReadLine();
-                            if(input == Constants.Constants.BACK) {
-                                Console.Clear();
-                                return;
-                            }
-                            if (string.IsNullOrWhiteSpace(input))
-                            {
-                                Console.WriteLine("Input cannot be empty.");
-                            }
-                            else if (int.TryParse(input, out int a))
-                            {
-                                sr = a;
-                                if (sr < 1 || sr > products.Count)
-                                {
-                                    Console.WriteLine($"Enter value between 1 and {products.Count}");
-                                }
-                                else
-                                {
-                                    flag = true;
-                                    break;
-                                }
-                            }
-                            else
-                            {
-                                Console.WriteLine("Enter valid input");
-                            }
-                            if (flag) break;
-                        }
+						var p = _productService.GetProductById(products[serialNumber - 1].Id);
+						totalAmount += p.Price;
+						p.Quantity--;
+						productIds.Add(products[serialNumber - 1].Id);
+						Console.WriteLine($"Added product with sr no. {serialNumber}");
+						Console.WriteLine($"Total amount: {totalAmount}\n");
+						continue;
+					}
+					if (choice == Choice_Constants.TWO)
+					{
+						if (productIds.Count < 1)
+						{
+							Console.WriteLine("You have not selected anything.\nOrder cancelled.");
+							Loader.Loader.PressAnyKeyToExit();
+							return;
+						}
 
-                        var p = _productService.GetProductById(products[sr - 1].Id);
-                        totalAmount += p.Price;
-                        p.Quantity--;
-                        productIds.Add(products[sr - 1].Id);
-                        Console.WriteLine($"Added product with sr no. {sr}");
-                        Console.WriteLine($"Total amount: {totalAmount}\n");
-                    }
-                    else if (choice == "2")
-                    {
-                        if (productIds.Count < 1)
-                        {
-                            Console.WriteLine("You have not selected anything.\nOrder cancelled.");
-                        }
-                        else
-                        {
-                            Console.WriteLine($"Your total amount for this order is {totalAmount}.");
-                            var addresses = user.Addresses;
+						Console.WriteLine($"Your total amount for this order is {totalAmount}.");
+						var addresses = user.Addresses;
 
-                            Address address;
-                            int addressChoice = 0;
-                            Console.WriteLine("\nChoose address");
-                            int j = 0;
-                            foreach (var add in addresses)
-                            {
-                                Console.WriteLine($"{j++}. {add.Street}, {add.City}, {add.ZipCode}");
-                            }
-                            Console.WriteLine($"{addresses.Count}. Enter new Address");
+						Address address;
+						DisplayAddresses(addresses);
+						Console.WriteLine($"{addresses.Count}. Enter new Address");
 
-                            bool isInputCorrect;
-                            do
-                            {
-                                var input = Console.ReadLine();
-                                if(input == Constants.Constants.BACK) {
-                                    Console.Clear();
-                                    return;
-                                }
-                                isInputCorrect = int.TryParse(input, out int ch);
-                                if (isInputCorrect) addressChoice = ch;
+						int addressChoice = GetAddressChoice(addresses.Count);
+						if (addressChoice == -1) return;
 
-                                if (!(addressChoice <= addresses.Count && addressChoice >= 0))
-                                {
-                                    Console.WriteLine("Enter valid choice.");
-                                    isInputCorrect = false;
-                                }
+						if (addressChoice == addresses.Count)
+						{
+							(address, bool wantToGoBack) = Utils.AddressReader.GetAddress();
+							if (wantToGoBack)
+							{
+								return;
+							}
+							addresses.Add(address);
+						}
+						else
+						{
+							address = addresses[addressChoice];
+						}
 
-                            } while (!isInputCorrect);
+						var order = new Order()
+						{
+							Id = Guid.NewGuid(),
+							UserId = userId,
+							ProductIds = productIds,
+							TotalAmount = totalAmount,
+							Address = address,
+							OrderStatus = OrderStatus.Pending
+						};
 
-                            if (addressChoice == addresses.Count)
-                            {
-                                address = Utils.AddressReader.GetAddress();
-                                if(address.Street == Constants.Constants.BACK) return;
-                                addresses.Add(address);
-                            }
-                            else
-                            {
-                                address = addresses[addressChoice];
-                            }
+						_orderService.PlaceOrderAsync(order);
+						Console.WriteLine("Order placed successfully.");
 
-                            var order = new Order() { Id = Guid.NewGuid(), UserId = userId, ProductIds = productIds, TotalAmount = totalAmount, Address = address, OrderStatus = OrderStatus.Pending };
+						Loader.Loader.PressAnyKeyToExit();
+						break;
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("Something went wrong.");
+				CustomLogger.Logger.LogError(e);
+			}
+		}
 
-                            _orderService.PlaceOrderAsync(order);
-                            Console.WriteLine("Order placed successfully.");
-                        }
+		public void ShowAllOrders()
+		{
+			try
+			{
+				var orders = _orderService.GetAllOrders().ToList();
 
-                        Console.WriteLine("\nPress any key to return to menu.");
-                        Console.ReadKey();
-                        Console.Clear();
-                        break;
-                    }
-                }
+				DisplayAllOrder(orders);
+				Loader.Loader.PressAnyKeyToExit();
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("Something went wrong.");
+				CustomLogger.Logger.LogError(e);
+			}
+		}
 
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Something went wrong.");
-                CustomLogger.Logger.LogError(e);
-            }
-        }
+		public void ShowAllOrdersByUserId(Guid userId)
+		{
+			try
+			{
+				var orders = _orderService.GetAllOrdersByUserId(userId).ToList();
+				DisplayAllOrder(orders);
+				Loader.Loader.PressAnyKeyToExit();
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("Something went wrong.");
+				CustomLogger.Logger.LogError(e);
+			}
+		}
 
-        public void ShowAllOrders()
-        {
-            try
-            {
-                var orders = _orderService.GetAllOrders().ToList();
-
-                if (orders.Count <= 0)
-                {
-                    Console.WriteLine("No orders at the moment.");
-                    Console.WriteLine("\nPress any key to return to menu.");
-                    Console.ReadKey();
-                    Console.Clear();
-                    return;
-                }
-
-                foreach (var order in orders)
-                {
-                    Console.WriteLine($"Order ID: {order.Id}, User ID: {order.UserId}, Total Amount: {order.TotalAmount}, Status: {order.OrderStatus}");
-                }
-                Console.WriteLine("\nPress any key to return to menu.");
-                Console.ReadKey();
-                Console.Clear();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Something went wrong.");
-                CustomLogger.Logger.LogError(e);
-            }
-        }
-
-        public void ShowAllOrdersByUserId(Guid userId)
-        {
-            try
-            {
-                var orders = _orderService.GetAllOrdersByUserId(userId);
-                foreach (var order in orders)
-                {
-                    Console.WriteLine($"\nOrder ID: {order.Id}, Total Amount: {order.TotalAmount}, Status: {order.OrderStatus}");
-                }
-                Console.WriteLine("\nPress any key to return to menu");
-                Console.ReadKey();
-                Console.Clear();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Something went wrong.");
-                CustomLogger.Logger.LogError(e);
-            }
-        }
-
-        public void DisplayOrderStatus(Guid userId)
-        {
+		public void DisplayOrderStatus(Guid userId)
+		{
 			try
 			{
 				var orders = _orderService.GetAllOrdersByUserId(userId);
@@ -271,30 +180,10 @@ namespace ECommerce.Controllers
 					}
 				}
 				Console.WriteLine("\nEnter order Id to check status");
-				var input = "";
-				Guid id = new Guid();
-				while (string.IsNullOrWhiteSpace(input))
-				{
-					input = Console.ReadLine();
-					if (input == Constants.Constants.BACK)
-					{
-						Console.Clear();
-						return;
-					}
-					if (string.IsNullOrWhiteSpace(input))
-					{
-						Console.WriteLine("Input cannot be empty.");
-					}
-					else if (Guid.TryParse(input, out Guid k))
-					{
-						id = k;
-						break;
-					}
-					else
-					{
-						input = "";
-					}
-				}
+
+				(Guid id, bool wantToBack) = GetGuidInput();
+				if (wantToBack) return;
+
 
 				Order order = _orderService.GetOrderById(id);
 				try
@@ -312,9 +201,7 @@ namespace ECommerce.Controllers
 				}
 				finally
 				{
-					Console.WriteLine("\nPress any key to return to menu.");
-					Console.ReadKey();
-					Console.Clear();
+					Loader.Loader.PressAnyKeyToExit();
 				}
 			}
 			catch (Exception e)
@@ -324,114 +211,247 @@ namespace ECommerce.Controllers
 			}
 		}
 
-        public void ChangeOrderStatus()
-        {
-            try
-            {
-                _orderService.ChangeOrderStatus();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Something went wrong.");
-                CustomLogger.Logger.LogError(e);
-            }
-        }
+		private void DisplayAllOrder(List<Order> orders)
+		{
+			if (orders.Count < 1)
+			{
+				Console.WriteLine($"No orders at the moment");
+				Loader.Loader.PressAnyKeyToExit();
+				return;
+			}
+			foreach (var order in orders)
+			{
+				Console.WriteLine($"\nOrder ID: {order.Id}, Total Amount: {order.TotalAmount}, Status: {order.OrderStatus}");
+			}
+		}
 
-        public void CancelOrder(Guid userId)
-        {
-            try
-            {
-                var orders = _orderService.GetAllOrdersByUserId(userId).Where(order => order.OrderStatus != OrderStatus.Delivered && order.OrderStatus != OrderStatus.Cancelled).ToList();
-                if(orders.Count < 1)
-                {
-                    Console.WriteLine("No orders at the moment to cancel.");
-                    Console.WriteLine("\nPress any key to return to menu");
-                    Console.ReadKey();
-                    Console.Clear();
-                    return;
-                }
-                foreach (var order in orders)
-                {
-                    Console.WriteLine($"\nOrder ID: {order.Id}, Total Amount: {order.TotalAmount}, Status: {order.OrderStatus}");
-                }
+		public void ChangeOrderStatus()
+		{
+			try
+			{
+				_orderService.ChangeOrderStatus();
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("Something went wrong.");
+				CustomLogger.Logger.LogError(e);
+			}
+		}
 
-                Console.WriteLine("Enter order id to cancel:");
-                var input = "";
-                Guid id = new Guid();
-                while (string.IsNullOrWhiteSpace(input))
-                {
-                    input = Console.ReadLine();
-                    if(input == Constants.Constants.BACK) {
-                        Console.Clear();
-                        return;
-                    }
-                    if (string.IsNullOrWhiteSpace(input))
-                    {
-                        Console.WriteLine("Input cannot be empty.");
-                    }
-                    else if (Guid.TryParse(input, out Guid k))
-                    {
-                        id = k;
-                        break;
-                    }
-                }
+		public void CancelOrder(Guid userId)
+		{
+			try
+			{
+				var orders = _orderService.GetAllOrdersByUserId(userId).Where(order => order.OrderStatus != OrderStatus.Delivered && order.OrderStatus != OrderStatus.Cancelled).ToList();
+				if (orders.Count < 1)
+				{
+					Console.WriteLine("No orders at the moment to cancel.");
+					Loader.Loader.PressAnyKeyToExit();
+					return;
+				}
+				foreach (var order in orders)
+				{
+					Console.WriteLine($"\nOrder ID: {order.Id}, Total Amount: {order.TotalAmount}, Status: {order.OrderStatus}");
+				}
 
-                try
-                {
-                    Order order = _orderService.GetOrderById(id);
-                    if (order is null)
-                        throw new OrderNotFoundException();
+				Console.WriteLine("Enter order id to cancel:");
 
-                    if (order.OrderStatus == OrderStatus.Cancelled)
-                    {
-                        Console.WriteLine("The order is already cancelled.");
-                    }
-                    else if (order.OrderStatus == OrderStatus.Delivered)
-                    {
-                        Console.WriteLine("The order is delivered. Cannot cancelled.");
-                    }
-                    else
-                    {
-                        order.OrderStatus = OrderStatus.Cancelled;
-                        Console.WriteLine("Order has been cancelled");
-                    }
-                }
-                catch (OrderNotFoundException ex)
-                {
-                    Console.WriteLine("Order cannot be found");
-                    CustomLogger.Logger.LogError(ex);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Something went wrong.");
-                    CustomLogger.Logger.LogError(e);
-                }
+				(Guid id, bool wantToBack) = GetGuidInput();
+				if (wantToBack) return;
 
-                Console.WriteLine("\nPress any key to return to menu");
-                Console.ReadKey();
-                Console.Clear();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Something went wrong.");
-                CustomLogger.Logger.LogError(e);
-            }
-        }
+				try
+				{
+					Order order = _orderService.GetOrderById(id);
+					if (order is null)
+					{
+						throw new OrderNotFoundException();
+					}
 
-        private void HandleOrderProcessed(Order o, string statused)
-        {
-            try
-            {
-                Console.WriteLine($"Order {statused}");
-                Guid userId = o.UserId;
-                Customer c = (Customer)_userService.GetUserById(userId);
-                c.Notifications.Enqueue($"Your order with order id {o.Id} has been {statused}.");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Something went wrong.");
-                CustomLogger.Logger.LogError(e);
-            }
-        }
-    }
+					if (order.OrderStatus == OrderStatus.Cancelled)
+					{
+						Console.WriteLine("The order is already cancelled.");
+						return;
+					}
+
+					if (order.OrderStatus == OrderStatus.Delivered)
+					{
+						Console.WriteLine("The order is delivered. Cannot be cancelled.");
+						return;
+					}
+
+					order.OrderStatus = OrderStatus.Cancelled;
+					Console.WriteLine("Order has been cancelled.");
+				}
+				catch (OrderNotFoundException ex)
+				{
+					Console.WriteLine("Order cannot be found");
+					CustomLogger.Logger.LogError(ex);
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine("Something went wrong.");
+					CustomLogger.Logger.LogError(e);
+				}
+
+				Loader.Loader.PressAnyKeyToExit();
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("Something went wrong.");
+				CustomLogger.Logger.LogError(e);
+			}
+		}
+
+		private void HandleOrderProcessed(Order o, string newStatus)
+		{
+			try
+			{
+				Console.WriteLine($"Order {newStatus}");
+				Guid userId = o.UserId;
+				Customer c = (Customer)_userService.GetUserById(userId);
+				c.Notifications.Enqueue($"Your order with order id {o.Id} has been {newStatus}.");
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("Something went wrong.");
+				CustomLogger.Logger.LogError(e);
+			}
+		}
+
+		private string GetChoice()
+		{
+			var choice = "";
+			while (true)
+			{
+				var input = Console.ReadLine();
+				if (input == Constants.Constants.BACK)
+				{
+					Console.Clear();
+					return input;
+				}
+				if (string.IsNullOrWhiteSpace(input))
+				{
+					Console.WriteLine("Input cannot be empty.");
+					continue;
+				}
+				if (input == Choice_Constants.ONE || input == Choice_Constants.TWO)
+				{
+					choice = input;
+					break;
+				}
+				Console.WriteLine("Enter valid choice.");
+			}
+			return choice;
+		}
+
+		private int GetAddressChoice(int addressCount)
+		{
+			int addressChoice = 0;
+			while (true)
+			{
+				var input = Console.ReadLine();
+				if (input == Constants.Constants.BACK)
+				{
+					Console.Clear();
+					return -1;
+				}
+				if (!int.TryParse(input, out addressChoice))
+				{
+					Console.WriteLine("Enter valid input.");
+					continue;
+				}
+				if (addressChoice < 0 || addressChoice > addressCount)
+				{
+					Console.WriteLine("Enter valid input.");
+					continue;
+				}
+				break;
+			}
+			return addressChoice;
+		}
+
+		private int GetSerialNumber(int productsListLength)
+		{
+
+			int serialNumber = -1;
+			while (true)
+			{
+				var input = Console.ReadLine();
+				if (input == Constants.Constants.BACK)
+				{
+					Console.Clear();
+					return -1;
+				}
+				if (string.IsNullOrWhiteSpace(input))
+				{
+					Console.WriteLine("Input cannot be empty.");
+					continue;
+				}
+				if (!int.TryParse(input, out serialNumber))
+				{
+					Console.WriteLine("Enter valid input.");
+					continue;
+				}
+				if (serialNumber < 1 || serialNumber > productsListLength)
+				{
+					Console.WriteLine($"Enter value between 1 and {productsListLength}");
+					continue;
+				}
+				break;
+			}
+			return serialNumber;
+		}
+
+		private (Guid, bool flag) GetGuidInput()
+		{
+			Guid id;
+			while (true)
+			{
+				var input = Console.ReadLine();
+				if (input == Constants.Constants.BACK)
+				{
+					Console.Clear();
+					return (new Guid(), false);
+				}
+				if (string.IsNullOrWhiteSpace(input))
+				{
+					Console.WriteLine("Input cannot be empty.");
+					continue;
+				}
+				if (Guid.TryParse(input, out id))
+				{
+					break;
+				}
+				Console.WriteLine("Invalid id format.");
+			}
+			return (id, true);
+		}
+
+		private void DisplayAvailableProducts(List<Product> products)
+		{
+			Console.WriteLine("Available products");
+
+			if (products.Count <= 0)
+			{
+				Console.WriteLine("No products available");
+				return;
+			}
+
+			for (int i = 0; i < products.Count; i++)
+			{
+				Console.Write($"sr no. {i + 1},  ");
+				products[i].DisplayInfo();
+			}
+			Console.WriteLine();
+		}
+
+		private void DisplayAddresses(List<Address> addresses)
+		{
+			Console.WriteLine("\nChoose address");
+			for (int j = 0; j < addresses.Count; j++)
+			{
+				Console.WriteLine($"{j}. {addresses[j].Street}, {addresses[j].City}, {addresses[j].ZipCode}");
+			}
+		}
+	}
 }

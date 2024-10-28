@@ -8,6 +8,7 @@ using System.Text;
 using System.Xml.Serialization;
 using Utils;
 using CustomLogger;
+using Constants;
 
 namespace ECommerce.Controllers
 {
@@ -25,28 +26,29 @@ namespace ECommerce.Controllers
 			try
 			{
 				Console.WriteLine("Sign up as: 1. Admin  2. Customer");
-				string choice = "";
-				bool flag = true;
-				while (string.IsNullOrWhiteSpace(choice) || flag)
+				var choice = "";
+				while (true)
 				{
-					choice = Console.ReadLine();
-					if (choice == Constants.Constants.BACK)
+					var input = Console.ReadLine();
+					if (input == Constants.Constants.BACK)
 					{
 						Console.Clear();
 						return;
 					}
-					if (string.IsNullOrWhiteSpace(choice) || !(choice == "1" || choice == "2"))
+					if (string.IsNullOrWhiteSpace(input))
 					{
-						Console.WriteLine("Enter valid choice.");
-						flag = true;
+						Console.WriteLine("Input cannot be empty.");
+						continue;
 					}
-					else
+					if (input == Choice_Constants.ONE || input == Choice_Constants.TWO)
 					{
-						flag = false;
+						choice = input;
+						break;
 					}
+					Console.WriteLine("Enter valid choice.");
 				}
 
-				var userRole = choice == "1" ? UserRole.Admin : UserRole.Customer;
+				var userRole = (choice == Choice_Constants.ONE) ? UserRole.Admin : UserRole.Customer;
 
 				Console.WriteLine("Enter Name:");
 				var name = "";
@@ -68,7 +70,7 @@ namespace ECommerce.Controllers
 
 				Console.WriteLine("Enter Email:");
 				var email = "";
-				while (string.IsNullOrWhiteSpace(email) || !email.IsValidEmail())
+				while (string.IsNullOrWhiteSpace(email))
 				{
 					email = Console.ReadLine();
 					if (email == Constants.Constants.BACK)
@@ -79,15 +81,19 @@ namespace ECommerce.Controllers
 					if (string.IsNullOrWhiteSpace(email))
 					{
 						Console.WriteLine("Email cannot be empty. Please try again.");
+						continue;
 					}
-					else if (!email.IsValidEmail())
+					if (!email.IsValidEmail())
 					{
 						Console.WriteLine("Please provide valid email.");
+						email = "";
+						continue;
 					}
 					if (_userService.GetAllUsers().FirstOrDefault(u => u.Email == email) != null)
 					{
 						Console.WriteLine("Email Id Exists. Try with another email Id");
 						email = "";
+						continue;
 					}
 				}
 
@@ -96,15 +102,21 @@ namespace ECommerce.Controllers
 				while (string.IsNullOrWhiteSpace(password))
 				{
 					password = Utils.PasswordReader.ReadPassword();
-					if (password == Constants.Constants.BACK) return;
+					if (password == Constants.Constants.BACK)
+					{
+						Console.Clear();
+						return;
+					}
 					if (string.IsNullOrWhiteSpace(password))
 					{
 						Console.WriteLine("Password cannot be empty. Please try again.");
+						continue;
 					}
-					else if (!password.IsValidPassword())
+					if (!password.IsValidPassword())
 					{
 						Console.WriteLine("\nPassword length must be atleast 8 with 1 Uppercase character, 1 symbol and a numeric character");
 						password = "";
+						continue;
 					}
 				}
 
@@ -112,9 +124,7 @@ namespace ECommerce.Controllers
 
 				_userService.AddUser(user);
 				Console.WriteLine($"\n{userRole} account created successfully.");
-				Console.WriteLine("\nPress any key to continue.");
-				Console.ReadKey();
-				Console.Clear();
+				Loader.Loader.PressAnyKeyToExit();
 			}
 			catch (Exception e)
 			{
@@ -214,14 +224,14 @@ namespace ECommerce.Controllers
 						Console.Clear();
 						return;
 					}
-					if (string.IsNullOrWhiteSpace(input) || !(input == "1" || input == "2" || input == "3"))
+					if (string.IsNullOrWhiteSpace(input) || !(input == Choice_Constants.ONE || input == Choice_Constants.TWO || input == Choice_Constants.THREE))
 					{
 						Console.WriteLine("Enter valid choice");
 						input = "";
 					}
 				}
 
-				if (input == "1")
+				if (input == Choice_Constants.ONE)
 				{
 					Console.WriteLine("Enter new name");
 					var name = "";
@@ -241,7 +251,7 @@ namespace ECommerce.Controllers
 					user.Name = name;
 					Console.WriteLine("Name changed successfully");
 				}
-				else if (input == "2")
+				else if (input == Choice_Constants.TWO)
 				{
 					Console.WriteLine("Enter new Email");
 					var email = "";
@@ -256,32 +266,40 @@ namespace ECommerce.Controllers
 						if (string.IsNullOrWhiteSpace(email))
 						{
 							Console.WriteLine("Input cannot be empty");
+							continue;
 						}
-						else if (_userService.GetAllUsers().FirstOrDefault(u => u.Email == email) != null)
+						if (_userService.GetAllUsers().FirstOrDefault(u => u.Email == email) != null)
 						{
 							Console.WriteLine("Email id exist in our database.\nTry with another email.");
 							email = "";
+							continue;
 						}
 					}
 					user.Email = email;
 					Console.WriteLine("Email id changed successfully.");
 				}
-				else if (input == "3")
+				else if (input == Choice_Constants.THREE)
 				{
 					Console.WriteLine("Enter new Password:");
 					var newPassword = "";
 					while (string.IsNullOrWhiteSpace(newPassword))
 					{
 						newPassword = Utils.PasswordReader.ReadPassword();
-						if (newPassword == Constants.Constants.BACK) return;
+						if (newPassword == Constants.Constants.BACK)
+						{
+							Console.Clear();
+							return;
+						}
 						if (string.IsNullOrWhiteSpace(newPassword))
 						{
 							Console.WriteLine("Password cannot be empty. Please try again.");
+							continue;
 						}
-						else if (!newPassword.IsValidPassword())
+						if (!newPassword.IsValidPassword())
 						{
 							Console.WriteLine("\nPassword must have 1 Uppercase character, 1 symbol and a numeric character");
 							newPassword = "";
+							continue;
 						}
 					}
 
@@ -290,7 +308,11 @@ namespace ECommerce.Controllers
 					while (string.IsNullOrWhiteSpace(password))
 					{
 						password = Utils.PasswordReader.ReadPassword();
-						if (password == Constants.Constants.BACK) return;
+						if (password == Constants.Constants.BACK)
+						{
+							Console.Clear();
+							return;
+						}
 						if (string.IsNullOrWhiteSpace(password))
 						{
 							Console.WriteLine("Password cannot be empty. Please try again.");
@@ -302,10 +324,7 @@ namespace ECommerce.Controllers
 						user.Password = newPassword;
 						Console.WriteLine("\nPassword changed successfully");
 					}
-					else
-					{
-						Console.WriteLine("\nOld password did not match.");
-					}
+					Console.WriteLine("\nOld password did not match.");
 				}
 				Console.WriteLine("Press any key to return to menu");
 				Console.ReadKey();

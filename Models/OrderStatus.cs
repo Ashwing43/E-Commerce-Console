@@ -1,7 +1,7 @@
 namespace ECommerce.Models
 {
-    public enum OrderStatus
-    {
-        Pending, Processed, Shipped, Delivered, Cancelled
-    }
+	public enum OrderStatus
+	{
+		Pending, Processed, Shipped, Delivered, Cancelled
+	}
 }

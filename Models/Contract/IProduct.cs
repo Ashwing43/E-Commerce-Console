@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Models.Contract
 {
-    public interface IProduct
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-        public decimal Price { get; set; }
-        public void DisplayInfo();
-    }
+	public interface IProduct
+	{
+		public Guid Id { get; set; }
+		public string Name { get; set; }
+		public decimal Price { get; set; }
+		public void DisplayInfo();
+	}
 }
