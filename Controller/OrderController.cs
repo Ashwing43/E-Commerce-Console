@@ -216,12 +216,17 @@ namespace ECommerce.Controllers
 			if (orders.Count < 1)
 			{
 				Console.WriteLine($"No orders at the moment");
-				Loader.Loader.PressAnyKeyToExit();
 				return;
 			}
 			foreach (var order in orders)
 			{
 				Console.WriteLine($"\nOrder ID: {order.Id}, Total Amount: {order.TotalAmount}, Status: {order.OrderStatus}");
+				Console.WriteLine("Products:");
+				foreach (var productId in order.ProductIds)
+				{
+					Product product = _productService.GetProductById(productId);
+					Console.WriteLine($"\tId: {product.Id}, Name: {product.Name}, Price: {product.Price}");
+				}
 			}
 		}
 
@@ -411,7 +416,7 @@ namespace ECommerce.Controllers
 				if (input == Constants.Constants.BACK)
 				{
 					Console.Clear();
-					return (new Guid(), false);
+					return (new Guid(), true);
 				}
 				if (string.IsNullOrWhiteSpace(input))
 				{
@@ -424,7 +429,7 @@ namespace ECommerce.Controllers
 				}
 				Console.WriteLine("Invalid id format.");
 			}
-			return (id, true);
+			return (id, false);
 		}
 
 		private void DisplayAvailableProducts(List<Product> products)
