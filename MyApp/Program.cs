@@ -12,6 +12,7 @@ class Program
 {
 	static void Main(string[] args)
 	{
+		DataStorage.DataStore.LoadData();
 		var serviceProvider = new ServiceCollection()
 			.AddSingleton<IProductRepository, ProductRepository>()
 			.AddSingleton<IProductService, ProductService>()
@@ -101,6 +102,7 @@ class Program
 			Console.WriteLine("Enter valid choice.");
 			Thread.Sleep(1000);
 		}
+		DataStorage.DataStore.SaveData();
 	}
 
 	public static void AdminMenu(Guid adminId, ProductController productController, UserController userController, OrderController orderController)

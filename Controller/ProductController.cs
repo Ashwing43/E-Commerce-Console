@@ -183,6 +183,7 @@ namespace ECommerce.Controllers
 					}
 					
 					prod.Quantity += quantity;
+					_productService.Save();
 					Console.WriteLine("Quantity increased by " + quantity);
 					Loader.Loader.PressAnyKeyToExit();
 					return;
@@ -195,6 +196,7 @@ namespace ECommerce.Controllers
 					(int quantity, wantToGoBack) = GetQuantityInput();
 					if(wantToGoBack)
 					{
+						Console.Clear();
 						return;
 					}
 
@@ -206,6 +208,7 @@ namespace ECommerce.Controllers
 					}
 					
 					prod.Quantity -= quantity;
+					_productService.Save();
 					Console.WriteLine("Quantity decreased by " + quantity);
 					Loader.Loader.PressAnyKeyToExit();
 					return;
@@ -222,6 +225,7 @@ namespace ECommerce.Controllers
 					}
 					
 					prod.Price = newPrice;
+					_productService.Save();
 					Console.WriteLine("New amount is " + newPrice);
 					Loader.Loader.PressAnyKeyToExit();
 					return;

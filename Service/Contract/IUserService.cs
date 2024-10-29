@@ -8,5 +8,6 @@ namespace ECommerce.Services
         User GetUserById(Guid id);
         IEnumerable<User> GetAllUsers();
         void DisplayInfo(Guid id);
-    }
+		public void Save();
+	}
 }

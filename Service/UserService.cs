@@ -69,5 +69,10 @@ namespace ECommerce.Services
 				CustomLogger.Logger.LogError(e);
 			}
 		}
+
+		public void Save()
+		{
+			_userRepository.Save();
+		}
 	}
 }

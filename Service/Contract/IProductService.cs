@@ -12,5 +12,6 @@ namespace ECommerce.Services
 		void AddProduct(Product product);
 		Product GetProductById(Guid id);
 		IEnumerable<Product> GetAllProducts();
+		public void Save();
 	}
 }

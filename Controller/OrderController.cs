@@ -248,6 +248,7 @@ namespace ECommerce.Controllers
 			try
 			{
 				_orderService.ChangeOrderStatus();
+				_orderService.Save();
 			}
 			catch (Exception e)
 			{
@@ -302,6 +303,7 @@ namespace ECommerce.Controllers
 					}
 
 					order.OrderStatus = OrderStatus.Cancelled;
+					_orderService.Save();
 					Console.WriteLine("Order has been cancelled.");
 				}
 				catch (OrderNotFoundException ex)

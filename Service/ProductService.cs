@@ -52,5 +52,10 @@ namespace ECommerce.Services
 				throw;
 			}
 		}
+
+		public void Save()
+		{
+			_productRepository.Save();
+		}
 	}
 }

@@ -10,5 +10,6 @@ namespace Service.Contract
 		void Add(T item);
 		T GetById(Guid id);
 		IEnumerable<T> GetAll();
+		void Save();
 	}
 }

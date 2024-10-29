@@ -63,6 +63,7 @@ namespace ECommerce.Controllers
 				User user = UserFactory.CreateUser(name, email, password, userRole);
 
 				_userService.AddUser(user);
+				_userService.Save();
 				Console.WriteLine($"\n{userRole} account created successfully.");
 				Loader.Loader.PressAnyKeyToExit();
 			}
@@ -85,7 +86,7 @@ namespace ECommerce.Controllers
 				}
 
 				Console.WriteLine("Enter Password:");
-				(var password, wantToGoBack) = GetPasswordInput();
+				(var password, wantToGoBack) = GetPasswordInputForLogin();
 				if (wantToGoBack)
 				{
 					return new Admin() { Name = Constants.Constants.BACK };
@@ -152,6 +153,7 @@ namespace ECommerce.Controllers
 					}
 
 					user.Name = name;
+					_userService.Save();
 					Console.WriteLine("Name changed successfully");
 					Loader.Loader.PressAnyKeyToExit();
 					return;
@@ -167,6 +169,7 @@ namespace ECommerce.Controllers
 					}
 
 					user.Email = email;
+					_userService.Save();
 					Console.WriteLine("Email id changed successfully.");
 					Loader.Loader.PressAnyKeyToExit();
 					return;
@@ -192,6 +195,7 @@ namespace ECommerce.Controllers
 					if (password == user.Password)
 					{
 						user.Password = newPassword;
+						_userService.Save();
 						Console.WriteLine("\nPassword changed successfully");
 					}
 					else
@@ -299,6 +303,25 @@ namespace ECommerce.Controllers
 				if (!password.IsValidPassword())
 				{
 					Console.WriteLine("\nPassword length must be atleast 8 with 1 Uppercase character, 1 symbol and a numeric character");
+					continue;
+				}
+				return (password, false);
+			}
+		}
+
+		private (string, bool) GetPasswordInputForLogin()
+		{
+			while (true)
+			{
+				var password = Utils.PasswordReader.ReadPassword();
+				if (password == Constants.Constants.BACK)
+				{
+					Console.Clear();
+					return (password, true);
+				}
+				if (string.IsNullOrWhiteSpace(password))
+				{
+					Console.WriteLine("Password cannot be empty. Please try again.");
 					continue;
 				}
 				return (password, false);

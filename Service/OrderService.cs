@@ -95,6 +95,7 @@ namespace ECommerce.Services
 			(Guid OrderId, bool wantToGoBack) = GetOrderIdInput();
 			if (wantToGoBack)
 			{
+				Console.Clear();
 				return;
 			}
 
@@ -115,6 +116,7 @@ namespace ECommerce.Services
 				(var input, wantToGoBack) = GetChoiceInput();
 				if (wantToGoBack)
 				{
+					Console.Clear();
 					return;
 				}
 
@@ -189,6 +191,7 @@ namespace ECommerce.Services
 					{
 						OnOrderProcessed.Invoke(order, status);
 					}
+					_orderRepository.Save();
 				}
 				Loader.Loader.PressAnyKeyToExit();
 			}
@@ -204,6 +207,11 @@ namespace ECommerce.Services
 				Console.WriteLine("Something went wrong.");
 				CustomLogger.Logger.LogError(e);
 			}
+		}
+
+		public void Save()
+		{
+			_orderRepository.Save();
 		}
 
 		public OrderProcessedEventHandler OnOrderProcessed { set; get; }

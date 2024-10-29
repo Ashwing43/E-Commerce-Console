@@ -1,5 +1,6 @@
 using Delegates;
 using ECommerce.Models;
+using System.Xml.Linq;
 
 namespace ECommerce.Services
 {
@@ -11,5 +12,6 @@ namespace ECommerce.Services
 		IEnumerable<Order> GetAllOrdersByUserId(Guid UserId);
 		public void ChangeOrderStatus();
 		public OrderProcessedEventHandler OnOrderProcessed { set; get; }
+		public void Save();
 	}
 }

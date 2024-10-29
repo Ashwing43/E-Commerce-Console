@@ -8,6 +8,7 @@ namespace ECommerce.Repositories
 		public void Add(Order order)
 		{
 			DataStore.Orders.Add(order);
+			DataStore.SaveData();
 		}
 		public Order GetById(Guid id)
 		{
@@ -17,6 +18,10 @@ namespace ECommerce.Repositories
 		public IEnumerable<Order> GetAll()
 		{
 			return DataStore.Orders;
+		}
+		public void Save()
+		{
+			DataStore.SaveData();
 		}
 	}
 }
