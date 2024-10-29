@@ -9,6 +9,7 @@ using System.Xml.Serialization;
 using Utils;
 using CustomLogger;
 using Constants;
+using System.Reflection.Metadata.Ecma335;
 
 namespace ECommerce.Controllers
 {
@@ -26,98 +27,37 @@ namespace ECommerce.Controllers
 			try
 			{
 				Console.WriteLine("Sign up as: 1. Admin  2. Customer");
-				var choice = "";
-				while (true)
+				(string choice, bool wantToGoBack) = GetChoiceInput();
+				if (wantToGoBack)
 				{
-					var input = Console.ReadLine();
-					if (input == Constants.Constants.BACK)
-					{
-						Console.Clear();
-						return;
-					}
-					if (string.IsNullOrWhiteSpace(input))
-					{
-						Console.WriteLine("Input cannot be empty.");
-						continue;
-					}
-					if (input == Choice_Constants.ONE || input == Choice_Constants.TWO)
-					{
-						choice = input;
-						break;
-					}
-					Console.WriteLine("Enter valid choice.");
+					Console.Clear();
+					return;
 				}
 
 				var userRole = (choice == Choice_Constants.ONE) ? UserRole.Admin : UserRole.Customer;
 
 				Console.WriteLine("Enter Name:");
-				var name = "";
-
-				while (string.IsNullOrWhiteSpace(name))
+				(var name, wantToGoBack) = GetNameInput();
+				if (wantToGoBack)
 				{
-					name = Console.ReadLine();
-					if (name == Constants.Constants.BACK)
-					{
-						Console.Clear();
-						return;
-					}
-
-					if (string.IsNullOrWhiteSpace(name))
-					{
-						Console.WriteLine("Name cannot be empty. Please try again.");
-					}
+					Console.Clear();
+					return;
 				}
 
 				Console.WriteLine("Enter Email:");
-				var email = "";
-				while (string.IsNullOrWhiteSpace(email))
+				(var email, wantToGoBack) = GetEmailInputForSignUpAndChangeEmail();
+				if (wantToGoBack)
 				{
-					email = Console.ReadLine();
-					if (email == Constants.Constants.BACK)
-					{
-						Console.Clear();
-						return;
-					}
-					if (string.IsNullOrWhiteSpace(email))
-					{
-						Console.WriteLine("Email cannot be empty. Please try again.");
-						continue;
-					}
-					if (!email.IsValidEmail())
-					{
-						Console.WriteLine("Please provide valid email.");
-						email = "";
-						continue;
-					}
-					if (_userService.GetAllUsers().FirstOrDefault(u => u.Email == email) != null)
-					{
-						Console.WriteLine("Email Id Exists. Try with another email Id");
-						email = "";
-						continue;
-					}
+					Console.Clear();
+					return;
 				}
 
 				Console.WriteLine("Enter Password:");
-				var password = "";
-				while (string.IsNullOrWhiteSpace(password))
+				(var password, wantToGoBack) = GetPasswordInput();
+				if (wantToGoBack)
 				{
-					password = Utils.PasswordReader.ReadPassword();
-					if (password == Constants.Constants.BACK)
-					{
-						Console.Clear();
-						return;
-					}
-					if (string.IsNullOrWhiteSpace(password))
-					{
-						Console.WriteLine("Password cannot be empty. Please try again.");
-						continue;
-					}
-					if (!password.IsValidPassword())
-					{
-						Console.WriteLine("\nPassword length must be atleast 8 with 1 Uppercase character, 1 symbol and a numeric character");
-						password = "";
-						continue;
-					}
+					Console.Clear();
+					return;
 				}
 
 				User user = UserFactory.CreateUser(name, email, password, userRole);
@@ -138,36 +78,17 @@ namespace ECommerce.Controllers
 			try
 			{
 				Console.WriteLine("Enter Email for login:");
-				var email = "";
-				while (string.IsNullOrWhiteSpace(email))
+				(var email, bool wantToGoBack) = GetEmailInputForLogin();
+				if (wantToGoBack)
 				{
-					email = Console.ReadLine();
-					if (email == Constants.Constants.BACK)
-					{
-						Console.Clear();
-						return new Admin() { Name = Constants.Constants.BACK }; ;
-					}
-					if (string.IsNullOrWhiteSpace(email))
-					{
-						Console.WriteLine("Email cannot be empty. Please try again.");
-					}
+					return new Admin() { Name = Constants.Constants.BACK };
 				}
 
 				Console.WriteLine("Enter Password:");
-				var password = "";
-				while (string.IsNullOrWhiteSpace(password))
+				(var password, wantToGoBack) = GetPasswordInput();
+				if (wantToGoBack)
 				{
-					password = Utils.PasswordReader.ReadPassword();
-					if (password == Constants.Constants.BACK)
-					{
-						Console.Clear();
-						return new Admin() { Name = Constants.Constants.BACK };
-					}
-
-					if (string.IsNullOrWhiteSpace(password))
-					{
-						Console.WriteLine("Password cannot be empty. Please try again.");
-					}
+					return new Admin() { Name = Constants.Constants.BACK };
 				}
 
 				var users = _userService.GetAllUsers();
@@ -179,9 +100,7 @@ namespace ECommerce.Controllers
 				}
 
 				Console.WriteLine($"\nLogged in as {user.Role}");
-				Console.WriteLine("\nPress any key to continue.");
-				Console.ReadKey();
-				Console.Clear();
+				Loader.Loader.PressAnyKeyToExit();
 				return user;
 			}
 			catch (Exception e)
@@ -215,108 +134,59 @@ namespace ECommerce.Controllers
 				Console.WriteLine("2. Email");
 				Console.WriteLine("3. Password");
 
-				var input = "";
-				while (string.IsNullOrWhiteSpace(input))
+				(var input, bool wantToGoBack) = GetChoiceInputForEditProfile();
+				if (wantToGoBack)
 				{
-					input = Console.ReadLine();
-					if (input == Constants.Constants.BACK)
-					{
-						Console.Clear();
-						return;
-					}
-					if (string.IsNullOrWhiteSpace(input) || !(input == Choice_Constants.ONE || input == Choice_Constants.TWO || input == Choice_Constants.THREE))
-					{
-						Console.WriteLine("Enter valid choice");
-						input = "";
-					}
+					Console.Clear();
+					return;
 				}
 
 				if (input == Choice_Constants.ONE)
 				{
 					Console.WriteLine("Enter new name");
-					var name = "";
-					while (string.IsNullOrWhiteSpace(name))
+					(var name, wantToGoBack) = GetNameInput();
+					if (wantToGoBack)
 					{
-						name = Console.ReadLine();
-						if (name == Constants.Constants.BACK)
-						{
-							Console.Clear();
-							return;
-						}
-						if (string.IsNullOrWhiteSpace(name))
-						{
-							Console.WriteLine("Input cannot be empty.");
-						}
+						Console.Clear();
+						return;
 					}
+
 					user.Name = name;
 					Console.WriteLine("Name changed successfully");
+					Loader.Loader.PressAnyKeyToExit();
+					return;
 				}
-				else if (input == Choice_Constants.TWO)
+				if (input == Choice_Constants.TWO)
 				{
 					Console.WriteLine("Enter new Email");
-					var email = "";
-					while (string.IsNullOrWhiteSpace(email))
+					(var email, wantToGoBack) = GetEmailInputForSignUpAndChangeEmail();
+					if (wantToGoBack)
 					{
-						email = Console.ReadLine();
-						if (email == Constants.Constants.BACK)
-						{
-							Console.Clear();
-							return;
-						}
-						if (string.IsNullOrWhiteSpace(email))
-						{
-							Console.WriteLine("Input cannot be empty");
-							continue;
-						}
-						if (_userService.GetAllUsers().FirstOrDefault(u => u.Email == email) != null)
-						{
-							Console.WriteLine("Email id exist in our database.\nTry with another email.");
-							email = "";
-							continue;
-						}
+						Console.Clear();
+						return;
 					}
+
 					user.Email = email;
 					Console.WriteLine("Email id changed successfully.");
+					Loader.Loader.PressAnyKeyToExit();
+					return;
 				}
-				else if (input == Choice_Constants.THREE)
+				if (input == Choice_Constants.THREE)
 				{
 					Console.WriteLine("Enter new Password:");
-					var newPassword = "";
-					while (string.IsNullOrWhiteSpace(newPassword))
+					(var newPassword, wantToGoBack) = GetPasswordInput();
+					if (wantToGoBack)
 					{
-						newPassword = Utils.PasswordReader.ReadPassword();
-						if (newPassword == Constants.Constants.BACK)
-						{
-							Console.Clear();
-							return;
-						}
-						if (string.IsNullOrWhiteSpace(newPassword))
-						{
-							Console.WriteLine("Password cannot be empty. Please try again.");
-							continue;
-						}
-						if (!newPassword.IsValidPassword())
-						{
-							Console.WriteLine("\nPassword must have 1 Uppercase character, 1 symbol and a numeric character");
-							newPassword = "";
-							continue;
-						}
+						Console.Clear();
+						return;
 					}
 
 					Console.WriteLine("\nEnter old Password:");
-					var password = "";
-					while (string.IsNullOrWhiteSpace(password))
+					(var password, wantToGoBack) = GetPasswordInput();
+					if (wantToGoBack)
 					{
-						password = Utils.PasswordReader.ReadPassword();
-						if (password == Constants.Constants.BACK)
-						{
-							Console.Clear();
-							return;
-						}
-						if (string.IsNullOrWhiteSpace(password))
-						{
-							Console.WriteLine("Password cannot be empty. Please try again.");
-						}
+						Console.Clear();
+						return;
 					}
 
 					if (password == user.Password)
@@ -324,16 +194,157 @@ namespace ECommerce.Controllers
 						user.Password = newPassword;
 						Console.WriteLine("\nPassword changed successfully");
 					}
-					Console.WriteLine("\nOld password did not match.");
+					else
+					{
+						Console.WriteLine("\nOld password did not match.");
+					}
+					Loader.Loader.PressAnyKeyToExit();
+					return;
 				}
-				Console.WriteLine("Press any key to return to menu");
-				Console.ReadKey();
-				Console.Clear();
 			}
 			catch (Exception e)
 			{
 				Console.WriteLine("Something went wrong.");
 				CustomLogger.Logger.LogError(e);
+			}
+		}
+
+		private (string, bool) GetChoiceInput()
+		{
+			while (true)
+			{
+				var input = Console.ReadLine();
+				if (input == Constants.Constants.BACK)
+				{
+					Console.Clear();
+					return (input, true);
+				}
+				if (string.IsNullOrWhiteSpace(input))
+				{
+					Console.WriteLine("Input cannot be empty.");
+					continue;
+				}
+				if (input == Choice_Constants.ONE || input == Choice_Constants.TWO)
+				{
+					return (input, false);
+				}
+				Console.WriteLine("Enter valid choice.");
+			}
+		}
+
+		private (string, bool) GetNameInput()
+		{
+			while (true)
+			{
+				var name = Console.ReadLine();
+				if (name == Constants.Constants.BACK)
+				{
+					Console.Clear();
+					return (name, true);
+				}
+
+				if (string.IsNullOrWhiteSpace(name))
+				{
+					Console.WriteLine("Name cannot be empty. Please try again.");
+					continue;
+				}
+				return (name, false);
+			}
+		}
+
+		private (string, bool) GetEmailInputForSignUpAndChangeEmail()
+		{
+			while (true)
+			{
+				var email = Console.ReadLine();
+				if (email == Constants.Constants.BACK)
+				{
+					Console.Clear();
+					return (email, true);
+				}
+				if (string.IsNullOrWhiteSpace(email))
+				{
+					Console.WriteLine("Email cannot be empty. Please try again.");
+					continue;
+				}
+				if (!email.IsValidEmail())
+				{
+					Console.WriteLine("Please provide valid email.");
+					continue;
+				}
+				if (_userService.GetAllUsers().FirstOrDefault(u => u.Email == email) != null)
+				{
+					Console.WriteLine("Email Id Exists. Try with another email Id");
+					continue;
+				}
+				return (email, false);
+			}
+		}
+
+		private (string, bool) GetPasswordInput()
+		{
+			while (true)
+			{
+				var password = Utils.PasswordReader.ReadPassword();
+				if (password == Constants.Constants.BACK)
+				{
+					Console.Clear();
+					return (password, true);
+				}
+				if (string.IsNullOrWhiteSpace(password))
+				{
+					Console.WriteLine("Password cannot be empty. Please try again.");
+					continue;
+				}
+				if (!password.IsValidPassword())
+				{
+					Console.WriteLine("\nPassword length must be atleast 8 with 1 Uppercase character, 1 symbol and a numeric character");
+					continue;
+				}
+				return (password, false);
+			}
+		}
+
+		private (string, bool) GetChoiceInputForEditProfile()
+		{
+			while (true)
+			{
+				var input = Console.ReadLine();
+				if (input == Constants.Constants.BACK)
+				{
+					Console.Clear();
+					return (input, true);
+				}
+				if (string.IsNullOrWhiteSpace(input) || !(input == Choice_Constants.ONE || input == Choice_Constants.TWO || input == Choice_Constants.THREE))
+				{
+					Console.WriteLine("Enter valid choice");
+					continue;
+				}
+				return (input, false);
+			}
+		}
+
+		private (string, bool) GetEmailInputForLogin()
+		{
+			while (true)
+			{
+				var email = Console.ReadLine();
+				if (email == Constants.Constants.BACK)
+				{
+					Console.Clear();
+					return (email, true);
+				}
+				if (string.IsNullOrWhiteSpace(email))
+				{
+					Console.WriteLine("Email cannot be empty. Please try again.");
+					continue;
+				}
+				if (!email.IsValidEmail())
+				{
+					Console.WriteLine("Please provide valid email.");
+					continue;
+				}
+				return (email, false);
 			}
 		}
 	}

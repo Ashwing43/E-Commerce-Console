@@ -83,9 +83,7 @@ namespace ECommerce.Services
 			if (orders.Count < 1)
 			{
 				Console.WriteLine("No orders at the moment.");
-				Console.WriteLine("\nPress any key to return to menu.");
-				Console.ReadKey();
-				Console.Clear();
+				Loader.Loader.PressAnyKeyToExit();
 				return;
 			}
 
@@ -94,32 +92,15 @@ namespace ECommerce.Services
 				Console.WriteLine($"Order Id: {o.Id},  User Id: {o.UserId},  Amount:{o.TotalAmount},  Order Status: {o.OrderStatus}");
 			}
 			Console.WriteLine("Enter order id");
-			Guid id;
-
-			while (true)
+			(Guid OrderId, bool wantToGoBack) = GetOrderIdInput();
+			if (wantToGoBack)
 			{
-				var input = Console.ReadLine();
-				if (input == Constants.Constants.BACK)
-				{
-					Console.Clear();
-					return;
-				}
-				if (string.IsNullOrWhiteSpace(input))
-				{
-					Console.WriteLine("Input cannot be empty.");
-					continue; 
-				}
-				if (Guid.TryParse(input, out Guid k))
-				{
-					id = k;
-					break;
-				}
-				Console.WriteLine("Invalid id format");
+				return;
 			}
 
 			try
 			{
-				Order order = _orderRepository.GetById(id);
+				Order order = _orderRepository.GetById(OrderId);
 				if (order is null)
 				{
 					throw new OrderNotFoundException();
@@ -131,33 +112,23 @@ namespace ECommerce.Services
 				Console.WriteLine("3. Delivered");
 				OrderStatus newStatus = OrderStatus.Pending;
 				bool isStatusChanged = false;
-				var input = "";
-				while (true)
+				(var input, wantToGoBack) = GetChoiceInput();
+				if (wantToGoBack)
 				{
-					input = Console.ReadLine();
-					if (input == Constants.Constants.BACK)
-					{
-						Console.Clear();
-						return;
-					}
-					if (input == "1" || input == "2" || input == "3" || input == "4") break;
-					else
-					{
-						Console.WriteLine("Enter valid choice");
-					}
+					return;
 				}
 
 				switch (input)
 				{
-					case "1":
+					case Constants.Choice_Constants.ONE:
 						newStatus = OrderStatus.Processed;
 						break;
 
-					case "2":
+					case Constants.Choice_Constants.TWO:
 						newStatus = OrderStatus.Shipped;
 						break;
 
-					case "3":
+					case Constants.Choice_Constants.THREE:
 						newStatus = OrderStatus.Delivered;
 						break;
 				}
@@ -165,7 +136,7 @@ namespace ECommerce.Services
 				string status = "";
 				switch (input)
 				{
-					case "1":
+					case Constants.Choice_Constants.ONE:
 						if (order.OrderStatus == OrderStatus.Pending)
 						{
 							order.OrderStatus = OrderStatus.Processed;
@@ -178,7 +149,7 @@ namespace ECommerce.Services
 						}
 						break;
 
-					case "2":
+					case Constants.Choice_Constants.TWO:
 						if (order.OrderStatus == OrderStatus.Processed)
 						{
 							order.OrderStatus = OrderStatus.Shipped;
@@ -195,7 +166,7 @@ namespace ECommerce.Services
 						}
 						break;
 
-					case "3":
+					case Constants.Choice_Constants.THREE:
 						if (order.OrderStatus == OrderStatus.Shipped)
 						{
 							order.OrderStatus = OrderStatus.Delivered;
@@ -219,18 +190,14 @@ namespace ECommerce.Services
 						OnOrderProcessed.Invoke(order, status);
 					}
 				}
-				Console.WriteLine("\nPress any key to return to menu.");
-				Console.ReadKey();
-				Console.Clear();
+				Loader.Loader.PressAnyKeyToExit();
 			}
 			catch (OrderNotFoundException ex)
 			{
 				Console.WriteLine("Order cannot be found");
 				Logger.LogError(ex);
 
-				Console.WriteLine("\nPress any key to return to menu.");
-				Console.ReadKey();
-				Console.Clear();
+				Loader.Loader.PressAnyKeyToExit();
 			}
 			catch (Exception e)
 			{
@@ -252,6 +219,50 @@ namespace ECommerce.Services
 			if (OnOrderProcessed != null)
 			{
 				this.OnOrderProcessed(o, status);
+			}
+		}
+
+		private (Guid, bool) GetOrderIdInput()
+		{
+			while (true)
+			{
+				var input = Console.ReadLine();
+				if (input == Constants.Constants.BACK)
+				{
+					Console.Clear();
+					return (new Guid(), true);
+				}
+				if (string.IsNullOrWhiteSpace(input))
+				{
+					Console.WriteLine("Input cannot be empty.");
+					continue;
+				}
+				if (Guid.TryParse(input, out Guid OrderId))
+				{
+					return (OrderId, false);
+				}
+				Console.WriteLine("Invalid id format");
+			}
+		}
+
+		private (string, bool) GetChoiceInput()
+		{
+			while (true)
+			{
+				var input = Console.ReadLine();
+				if (input == Constants.Constants.BACK)
+				{
+					Console.Clear();
+					return (input, true);
+				}
+				if (input == Constants.Choice_Constants.ONE || input == Constants.Choice_Constants.TWO || input == Constants.Choice_Constants.THREE || input == Constants.Choice_Constants.FOUR)
+				{
+					return (input, false);
+				}
+				else
+				{
+					Console.WriteLine("Enter valid choice");
+				}
 			}
 		}
 	}

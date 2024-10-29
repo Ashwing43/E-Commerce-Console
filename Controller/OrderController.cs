@@ -51,8 +51,8 @@ namespace ECommerce.Controllers
 					Console.WriteLine("1. Add product");
 					Console.WriteLine("2. Finish order");
 
-					var choice = GetChoice();
-					if (choice == Constants.Constants.BACK)
+					(var choice, bool wantToGoBack) = GetChoiceInput();
+					if (wantToGoBack)
 					{
 						Console.Clear();
 						return;
@@ -63,8 +63,12 @@ namespace ECommerce.Controllers
 					{
 						Console.WriteLine("Enter Product sr. no. to order:");
 
-						int serialNumber = GetSerialNumber(products.Count);
-						if (serialNumber == -1) return;
+						(int serialNumber, wantToGoBack) = GetSerialNumberInput(products.Count);
+						if (wantToGoBack)
+						{
+							Console.Clear();
+							return;
+						}
 
 						var p = _productService.GetProductById(products[serialNumber - 1].Id);
 						totalAmount += p.Price;
@@ -90,14 +94,19 @@ namespace ECommerce.Controllers
 						DisplayAddresses(addresses);
 						Console.WriteLine($"{addresses.Count}. Enter new Address");
 
-						int addressChoice = GetAddressChoice(addresses.Count);
-						if (addressChoice == -1) return;
+						(int addressChoice, wantToGoBack) = GetAddressChoiceInput(addresses.Count);
+						if (wantToGoBack)
+						{
+							Console.Clear();
+							return;
+						}
 
 						if (addressChoice == addresses.Count)
 						{
-							(address, bool wantToGoBack) = Utils.AddressReader.GetAddress();
+							(address, wantToGoBack) = Utils.AddressReader.GetAddress();
 							if (wantToGoBack)
 							{
+								Console.Clear();
 								return;
 							}
 							addresses.Add(address);
@@ -181,13 +190,17 @@ namespace ECommerce.Controllers
 				}
 				Console.WriteLine("\nEnter order Id to check status");
 
-				(Guid id, bool wantToBack) = GetGuidInput();
-				if (wantToBack) return;
+				(Guid id, bool wantToGoBack) = GetGuidInput();
+				if (wantToGoBack)
+				{
+					Console.Clear();
+					return;
+				}
 
-
-				Order order = _orderService.GetOrderById(id);
 				try
 				{
+					Order order = _orderService.GetOrderById(id);
+
 					if (order == null)
 					{
 						throw new OrderNotFoundException();
@@ -261,8 +274,12 @@ namespace ECommerce.Controllers
 
 				Console.WriteLine("Enter order id to cancel:");
 
-				(Guid id, bool wantToBack) = GetGuidInput();
-				if (wantToBack) return;
+				(Guid id, bool wantToGoBack) = GetGuidInput();
+				if (wantToGoBack)
+				{
+					Console.Clear();
+					return;
+				}
 
 				try
 				{
@@ -323,7 +340,7 @@ namespace ECommerce.Controllers
 			}
 		}
 
-		private string GetChoice()
+		private (string, bool) GetChoiceInput()
 		{
 			var choice = "";
 			while (true)
@@ -332,7 +349,7 @@ namespace ECommerce.Controllers
 				if (input == Constants.Constants.BACK)
 				{
 					Console.Clear();
-					return input;
+					return (input, true);
 				}
 				if (string.IsNullOrWhiteSpace(input))
 				{
@@ -346,10 +363,10 @@ namespace ECommerce.Controllers
 				}
 				Console.WriteLine("Enter valid choice.");
 			}
-			return choice;
+			return (choice, false);
 		}
 
-		private int GetAddressChoice(int addressCount)
+		private (int, bool) GetAddressChoiceInput(int addressCount)
 		{
 			int addressChoice = 0;
 			while (true)
@@ -358,7 +375,7 @@ namespace ECommerce.Controllers
 				if (input == Constants.Constants.BACK)
 				{
 					Console.Clear();
-					return -1;
+					return (-1, true);
 				}
 				if (!int.TryParse(input, out addressChoice))
 				{
@@ -372,10 +389,10 @@ namespace ECommerce.Controllers
 				}
 				break;
 			}
-			return addressChoice;
+			return (addressChoice, false);
 		}
 
-		private int GetSerialNumber(int productsListLength)
+		private (int, bool) GetSerialNumberInput(int productsListLength)
 		{
 
 			int serialNumber = -1;
@@ -385,7 +402,7 @@ namespace ECommerce.Controllers
 				if (input == Constants.Constants.BACK)
 				{
 					Console.Clear();
-					return -1;
+					return (-1, true);
 				}
 				if (string.IsNullOrWhiteSpace(input))
 				{
@@ -404,7 +421,7 @@ namespace ECommerce.Controllers
 				}
 				break;
 			}
-			return serialNumber;
+			return (serialNumber, false);
 		}
 
 		private (Guid, bool flag) GetGuidInput()
