@@ -8,7 +8,7 @@ using System.Text;
 using System.Xml.Serialization;
 using Utils;
 using CustomLogger;
-using Constants;
+using AppConstants;
 using System.Reflection.Metadata.Ecma335;
 
 namespace ECommerce.Controllers
@@ -34,7 +34,7 @@ namespace ECommerce.Controllers
 					return;
 				}
 
-				var userRole = (choice == Choice_Constants.ONE) ? UserRole.Admin : UserRole.Customer;
+				var userRole = (choice == ChoiceConstants.ONE) ? UserRole.Admin : UserRole.Customer;
 
 				Console.WriteLine("Enter Name:");
 				(var name, wantToGoBack) = GetNameInput();
@@ -65,7 +65,7 @@ namespace ECommerce.Controllers
 				_userService.AddUser(user);
 				_userService.Save();
 				Console.WriteLine($"\n{userRole} account created successfully.");
-				Loader.Loader.PressAnyKeyToExit();
+				Animation.Loader.PressAnyKeyToExit();
 			}
 			catch (Exception e)
 			{
@@ -74,7 +74,7 @@ namespace ECommerce.Controllers
 			}
 		}
 
-		public User Login()
+		public (User?, bool) Login()
 		{
 			try
 			{
@@ -82,14 +82,14 @@ namespace ECommerce.Controllers
 				(var email, bool wantToGoBack) = GetEmailInputForLogin();
 				if (wantToGoBack)
 				{
-					return new Admin() { Name = Constants.Constants.BACK };
+					return (null, true);
 				}
 
 				Console.WriteLine("Enter Password:");
 				(var password, wantToGoBack) = GetPasswordInputForLogin();
 				if (wantToGoBack)
 				{
-					return new Admin() { Name = Constants.Constants.BACK };
+					return (null, true);
 				}
 
 				var users = _userService.GetAllUsers();
@@ -97,18 +97,18 @@ namespace ECommerce.Controllers
 
 				if (user == null)
 				{
-					return null;
+					return (null, false);
 				}
 
 				Console.WriteLine($"\nLogged in as {user.Role}");
-				Loader.Loader.PressAnyKeyToExit();
-				return user;
+				Animation.Loader.PressAnyKeyToExit();
+				return (user, false);
 			}
 			catch (Exception e)
 			{
 				Console.WriteLine("Something went wrong.");
 				CustomLogger.Logger.LogError(e);
-				return null;
+				return (null, false);
 			}
 		}
 
@@ -142,7 +142,7 @@ namespace ECommerce.Controllers
 					return;
 				}
 
-				if (input == Choice_Constants.ONE)
+				if (input == ChoiceConstants.ONE)
 				{
 					Console.WriteLine("Enter new name");
 					(var name, wantToGoBack) = GetNameInput();
@@ -155,10 +155,10 @@ namespace ECommerce.Controllers
 					user.Name = name;
 					_userService.Save();
 					Console.WriteLine("Name changed successfully");
-					Loader.Loader.PressAnyKeyToExit();
+					Animation.Loader.PressAnyKeyToExit();
 					return;
 				}
-				if (input == Choice_Constants.TWO)
+				if (input == ChoiceConstants.TWO)
 				{
 					Console.WriteLine("Enter new Email");
 					(var email, wantToGoBack) = GetEmailInputForSignUpAndChangeEmail();
@@ -171,10 +171,10 @@ namespace ECommerce.Controllers
 					user.Email = email;
 					_userService.Save();
 					Console.WriteLine("Email id changed successfully.");
-					Loader.Loader.PressAnyKeyToExit();
+					Animation.Loader.PressAnyKeyToExit();
 					return;
 				}
-				if (input == Choice_Constants.THREE)
+				if (input == ChoiceConstants.THREE)
 				{
 					Console.WriteLine("Enter new Password:");
 					(var newPassword, wantToGoBack) = GetPasswordInput();
@@ -202,7 +202,7 @@ namespace ECommerce.Controllers
 					{
 						Console.WriteLine("\nOld password did not match.");
 					}
-					Loader.Loader.PressAnyKeyToExit();
+					Animation.Loader.PressAnyKeyToExit();
 					return;
 				}
 			}
@@ -218,7 +218,7 @@ namespace ECommerce.Controllers
 			while (true)
 			{
 				var input = Console.ReadLine();
-				if (input == Constants.Constants.BACK)
+				if (input == AppConstants.Constants.BACK)
 				{
 					Console.Clear();
 					return (input, true);
@@ -228,7 +228,7 @@ namespace ECommerce.Controllers
 					Console.WriteLine("Input cannot be empty.");
 					continue;
 				}
-				if (input == Choice_Constants.ONE || input == Choice_Constants.TWO)
+				if (input == ChoiceConstants.ONE || input == ChoiceConstants.TWO)
 				{
 					return (input, false);
 				}
@@ -241,7 +241,7 @@ namespace ECommerce.Controllers
 			while (true)
 			{
 				var name = Console.ReadLine();
-				if (name == Constants.Constants.BACK)
+				if (name == AppConstants.Constants.BACK)
 				{
 					Console.Clear();
 					return (name, true);
@@ -261,7 +261,7 @@ namespace ECommerce.Controllers
 			while (true)
 			{
 				var email = Console.ReadLine();
-				if (email == Constants.Constants.BACK)
+				if (email == AppConstants.Constants.BACK)
 				{
 					Console.Clear();
 					return (email, true);
@@ -290,7 +290,7 @@ namespace ECommerce.Controllers
 			while (true)
 			{
 				var password = Utils.PasswordReader.ReadPassword();
-				if (password == Constants.Constants.BACK)
+				if (password == AppConstants.Constants.BACK)
 				{
 					Console.Clear();
 					return (password, true);
@@ -314,7 +314,7 @@ namespace ECommerce.Controllers
 			while (true)
 			{
 				var password = Utils.PasswordReader.ReadPassword();
-				if (password == Constants.Constants.BACK)
+				if (password == AppConstants.Constants.BACK)
 				{
 					Console.Clear();
 					return (password, true);
@@ -333,12 +333,12 @@ namespace ECommerce.Controllers
 			while (true)
 			{
 				var input = Console.ReadLine();
-				if (input == Constants.Constants.BACK)
+				if (input == AppConstants.Constants.BACK)
 				{
 					Console.Clear();
 					return (input, true);
 				}
-				if (string.IsNullOrWhiteSpace(input) || !(input == Choice_Constants.ONE || input == Choice_Constants.TWO || input == Choice_Constants.THREE))
+				if (string.IsNullOrWhiteSpace(input) || !(input == ChoiceConstants.ONE || input == ChoiceConstants.TWO || input == ChoiceConstants.THREE))
 				{
 					Console.WriteLine("Enter valid choice");
 					continue;
@@ -352,7 +352,7 @@ namespace ECommerce.Controllers
 			while (true)
 			{
 				var email = Console.ReadLine();
-				if (email == Constants.Constants.BACK)
+				if (email == AppConstants.Constants.BACK)
 				{
 					Console.Clear();
 					return (email, true);

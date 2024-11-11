@@ -11,7 +11,7 @@ namespace ECommerce.Models
 		public int Quantity { get; set; }
 		public void DisplayInfo()
 		{
-			Console.WriteLine($"Name: {this.Name}, Price: {this.Price}, Quantity: {this.Quantity}");
+			Console.WriteLine($"Name: {this.Name},\t Price: {this.Price},\t Quantity: {this.Quantity}");
 		}
 	}
 }

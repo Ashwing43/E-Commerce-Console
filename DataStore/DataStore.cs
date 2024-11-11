@@ -36,19 +36,31 @@ namespace DataStorage
 				Converters = { new JsonStringEnumConverter(), new UserJsonConverter() }
 			};
 
-			if (File.Exists(UsersFilePath))
+			if (File.Exists(UsersFilePath) && new FileInfo(UsersFilePath).Length > 0)
 			{
-				Users = JsonSerializer.Deserialize<List<User>>(File.ReadAllText(UsersFilePath), options) ?? new List<User>();
+				Users = JsonSerializer.Deserialize<List<User>>(File.ReadAllText(UsersFilePath), options);
+			}
+			else
+			{
+				Users = new List<User>();
 			}
 
-			if (File.Exists(ProductsFilePath))
+			if (File.Exists(ProductsFilePath) && new FileInfo(ProductsFilePath).Length > 0)
 			{
 				Products = JsonSerializer.Deserialize<List<Product>>(File.ReadAllText(ProductsFilePath), options) ?? new List<Product>();
 			}
+			else
+			{
+				Products = new List<Product>();
+			}
 
-			if (File.Exists(OrdersFilePath))
+			if (File.Exists(OrdersFilePath) && new FileInfo(OrdersFilePath).Length > 0)
 			{
 				Orders = JsonSerializer.Deserialize<List<Order>>(File.ReadAllText(OrdersFilePath), options) ?? new List<Order>();
+			}
+			else
+			{
+				Orders = new List<Order>();
 			}
 		}
 	}

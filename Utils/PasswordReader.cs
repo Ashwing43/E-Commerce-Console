@@ -22,7 +22,7 @@ namespace Utils
 					password.Remove(password.Length - 1, 1);
 					Console.Write("\b \b");
 				}
-				if (password.ToString() == Constants.Constants.BACK) return Constants.Constants.BACK;
+				if (password.ToString() == AppConstants.Constants.BACK) return AppConstants.Constants.BACK;
 			} while (keyInfo.Key != ConsoleKey.Enter);
 
 			return password.ToString();

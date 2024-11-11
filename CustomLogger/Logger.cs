@@ -4,7 +4,7 @@
 	{
 		public static void LogError(Exception ex)
 		{
-			string filePath = Constants.Constants.logPath;
+			string filePath = AppConstants.Constants.logPath;
 
 			string str = "*********************************************************************\n";
 			File.AppendAllText(filePath, str);

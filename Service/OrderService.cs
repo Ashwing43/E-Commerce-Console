@@ -83,7 +83,7 @@ namespace ECommerce.Services
 			if (orders.Count < 1)
 			{
 				Console.WriteLine("No orders at the moment.");
-				Loader.Loader.PressAnyKeyToExit();
+				Animation.Loader.PressAnyKeyToExit();
 				return;
 			}
 
@@ -122,15 +122,15 @@ namespace ECommerce.Services
 
 				switch (input)
 				{
-					case Constants.Choice_Constants.ONE:
+					case AppConstants.ChoiceConstants.ONE:
 						newStatus = OrderStatus.Processed;
 						break;
 
-					case Constants.Choice_Constants.TWO:
+					case AppConstants.ChoiceConstants.TWO:
 						newStatus = OrderStatus.Shipped;
 						break;
 
-					case Constants.Choice_Constants.THREE:
+					case AppConstants.ChoiceConstants.THREE:
 						newStatus = OrderStatus.Delivered;
 						break;
 				}
@@ -138,7 +138,7 @@ namespace ECommerce.Services
 				string status = "";
 				switch (input)
 				{
-					case Constants.Choice_Constants.ONE:
+					case AppConstants.ChoiceConstants.ONE:
 						if (order.OrderStatus == OrderStatus.Pending)
 						{
 							order.OrderStatus = OrderStatus.Processed;
@@ -151,7 +151,7 @@ namespace ECommerce.Services
 						}
 						break;
 
-					case Constants.Choice_Constants.TWO:
+					case AppConstants.ChoiceConstants.TWO:
 						if (order.OrderStatus == OrderStatus.Processed)
 						{
 							order.OrderStatus = OrderStatus.Shipped;
@@ -168,7 +168,7 @@ namespace ECommerce.Services
 						}
 						break;
 
-					case Constants.Choice_Constants.THREE:
+					case AppConstants.ChoiceConstants.THREE:
 						if (order.OrderStatus == OrderStatus.Shipped)
 						{
 							order.OrderStatus = OrderStatus.Delivered;
@@ -193,19 +193,20 @@ namespace ECommerce.Services
 					}
 					_orderRepository.Save();
 				}
-				Loader.Loader.PressAnyKeyToExit();
+				Animation.Loader.PressAnyKeyToExit();
 			}
 			catch (OrderNotFoundException ex)
 			{
 				Console.WriteLine("Order cannot be found");
 				Logger.LogError(ex);
 
-				Loader.Loader.PressAnyKeyToExit();
+				Animation.Loader.PressAnyKeyToExit();
 			}
 			catch (Exception e)
 			{
 				Console.WriteLine("Something went wrong.");
 				CustomLogger.Logger.LogError(e);
+				Animation.Loader.PressAnyKeyToExit();
 			}
 		}
 
@@ -235,7 +236,7 @@ namespace ECommerce.Services
 			while (true)
 			{
 				var input = Console.ReadLine();
-				if (input == Constants.Constants.BACK)
+				if (input == AppConstants.Constants.BACK)
 				{
 					Console.Clear();
 					return (new Guid(), true);
@@ -258,12 +259,12 @@ namespace ECommerce.Services
 			while (true)
 			{
 				var input = Console.ReadLine();
-				if (input == Constants.Constants.BACK)
+				if (input == AppConstants.Constants.BACK)
 				{
 					Console.Clear();
 					return (input, true);
 				}
-				if (input == Constants.Choice_Constants.ONE || input == Constants.Choice_Constants.TWO || input == Constants.Choice_Constants.THREE || input == Constants.Choice_Constants.FOUR)
+				if (input == AppConstants.ChoiceConstants.ONE || input == AppConstants.ChoiceConstants.TWO || input == AppConstants.ChoiceConstants.THREE || input == AppConstants.ChoiceConstants.FOUR)
 				{
 					return (input, false);
 				}

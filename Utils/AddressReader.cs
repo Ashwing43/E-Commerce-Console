@@ -19,7 +19,7 @@ namespace Utils
 			while (string.IsNullOrWhiteSpace(street))
 			{
 				street = Console.ReadLine();
-				if (street == Constants.Constants.BACK)
+				if (street == AppConstants.Constants.BACK)
 				{
 					return (new Address(), true);
 				}
@@ -35,7 +35,7 @@ namespace Utils
 			while (string.IsNullOrWhiteSpace(city))
 			{
 				city = Console.ReadLine();
-				if (city == Constants.Constants.BACK)
+				if (city == AppConstants.Constants.BACK)
 				{
 					return (new Address(), true);
 				}
@@ -51,7 +51,7 @@ namespace Utils
 			while (string.IsNullOrWhiteSpace(zip))
 			{
 				zip = Console.ReadLine();
-				if (zip == Constants.Constants.BACK)
+				if (zip == AppConstants.Constants.BACK)
 				{
 					return (new Address(), true);
 				}

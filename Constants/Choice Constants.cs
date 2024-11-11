@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Constants
+namespace AppConstants
 {
-	public class Choice_Constants
+	public class ChoiceConstants
 	{
 		public const string ONE = "1";
 		public const string TWO = "2";

@@ -1,4 +1,4 @@
-﻿using Constants;
+﻿using AppConstants;
 using ECommerce.Models;
 using ECommerce.Services;
 using Models.Contract;
@@ -69,7 +69,7 @@ namespace ECommerce.Controllers
 				{
 					Console.WriteLine("Product already exists, cannot be added");
 				}
-				Loader.Loader.PressAnyKeyToExit();
+				Animation.Loader.PressAnyKeyToExit();
 			}
 			catch (Exception e)
 			{
@@ -87,15 +87,15 @@ namespace ECommerce.Controllers
 				if (products.Count <= 0)
 				{
 					Console.WriteLine("No products available.");
-					Loader.Loader.PressAnyKeyToExit();
+					Animation.Loader.PressAnyKeyToExit();
 					return;
 				}
 				for (int i = 0; i < products.Count; i++)
 				{
-					Console.Write($"Sr. No. {i + 1},  ");
+					Console.Write($"Sr. No. {i + 1},\t");
 					products[i].DisplayInfo();
 				}
-				Loader.Loader.PressAnyKeyToExit();
+				Animation.Loader.PressAnyKeyToExit();
 			}
 			catch (Exception e)
 			{
@@ -112,15 +112,15 @@ namespace ECommerce.Controllers
 				if (products.Count <= 0)
 				{
 					Console.WriteLine("No products available.");
-					Loader.Loader.PressAnyKeyToExit();
+					Animation.Loader.PressAnyKeyToExit();
 					return;
 				}
 				for (int i = 0; i < products.Count; i++)
 				{
-					Console.Write($"Sr. No. {i + 1},  ");
+					Console.Write($"Sr. No. {i + 1},\t ");
 					products[i].DisplayInfo();
 				}
-				Loader.Loader.PressAnyKeyToExit();
+				Animation.Loader.PressAnyKeyToExit();
 			}
 			catch (Exception e)
 			{
@@ -137,13 +137,13 @@ namespace ECommerce.Controllers
 				if (products.Count <= 0)
 				{
 					Console.WriteLine("No products available.");
-					Loader.Loader.PressAnyKeyToExit();
+					Animation.Loader.PressAnyKeyToExit();
 					return;
 				}
 
 				for (int i = 0; i < products.Count; i++)
 				{
-					Console.Write($"Sr. No. {i + 1},  ");
+					Console.Write($"Sr. No. {i + 1},\t");
 					products[i].DisplayInfo();
 				}
 				Console.WriteLine();
@@ -171,8 +171,8 @@ namespace ECommerce.Controllers
 					Console.Clear();
 					return;
 				}
-				
-				if (choice == Choice_Constants.ONE)
+
+				if (choice == ChoiceConstants.ONE)
 				{
 					Console.WriteLine("Enter quantity to increase");
 					(int quantity, wantToGoBack) = GetQuantityInput();
@@ -181,20 +181,20 @@ namespace ECommerce.Controllers
 						Console.Clear();
 						return;
 					}
-					
+
 					prod.Quantity += quantity;
 					_productService.Save();
 					Console.WriteLine("Quantity increased by " + quantity);
-					Loader.Loader.PressAnyKeyToExit();
+					Animation.Loader.PressAnyKeyToExit();
 					return;
 				}
 
-				if (choice == Choice_Constants.TWO)
+				if (choice == ChoiceConstants.TWO)
 				{
 					Console.WriteLine("Enter quantity to decrease");
 
 					(int quantity, wantToGoBack) = GetQuantityInput();
-					if(wantToGoBack)
+					if (wantToGoBack)
 					{
 						Console.Clear();
 						return;
@@ -203,18 +203,18 @@ namespace ECommerce.Controllers
 					if (prod.Quantity < quantity)
 					{
 						Console.WriteLine("Quantity cannot be reduced as value is greater than existing quantity.");
-						Loader.Loader.PressAnyKeyToExit();
+						Animation.Loader.PressAnyKeyToExit();
 						return;
 					}
-					
+
 					prod.Quantity -= quantity;
 					_productService.Save();
 					Console.WriteLine("Quantity decreased by " + quantity);
-					Loader.Loader.PressAnyKeyToExit();
+					Animation.Loader.PressAnyKeyToExit();
 					return;
 				}
 
-				if (choice == "3")
+				if (choice == ChoiceConstants.THREE)
 				{
 					Console.WriteLine("Enter new price");
 					(decimal newPrice, wantToGoBack) = GetPriceInput();
@@ -223,11 +223,11 @@ namespace ECommerce.Controllers
 						Console.Clear();
 						return;
 					}
-					
+
 					prod.Price = newPrice;
 					_productService.Save();
 					Console.WriteLine("New amount is " + newPrice);
-					Loader.Loader.PressAnyKeyToExit();
+					Animation.Loader.PressAnyKeyToExit();
 					return;
 				}
 			}
@@ -244,7 +244,7 @@ namespace ECommerce.Controllers
 			while (true)
 			{
 				var priceInput = Console.ReadLine();
-				if (priceInput == Constants.Constants.BACK)
+				if (priceInput == AppConstants.Constants.BACK)
 				{
 					Console.Clear();
 					return (0, true);
@@ -269,7 +269,7 @@ namespace ECommerce.Controllers
 			while (true)
 			{
 				var quantityInput = Console.ReadLine();
-				if (quantityInput == Constants.Constants.BACK)
+				if (quantityInput == AppConstants.Constants.BACK)
 				{
 					Console.Clear();
 					return (quantity, true);
@@ -293,7 +293,7 @@ namespace ECommerce.Controllers
 			while (string.IsNullOrWhiteSpace(name))
 			{
 				name = Console.ReadLine();
-				if (name == Constants.Constants.BACK)
+				if (name == AppConstants.Constants.BACK)
 				{
 					Console.Clear();
 					return (name, true);
@@ -311,10 +311,10 @@ namespace ECommerce.Controllers
 			while (true)
 			{
 				var choice = Console.ReadLine();
-				if (choice == Constants.Constants.BACK)
+				if (choice == AppConstants.Constants.BACK)
 				{
 					Console.Clear();
-					return(input, true);
+					return (input, true);
 				}
 				if (string.IsNullOrWhiteSpace(choice))
 				{
@@ -340,7 +340,7 @@ namespace ECommerce.Controllers
 			while (true)
 			{
 				var choice = Console.ReadLine();
-				if (choice == Constants.Constants.BACK)
+				if (choice == AppConstants.Constants.BACK)
 				{
 					Console.Clear();
 					return (choice, true);
@@ -350,7 +350,7 @@ namespace ECommerce.Controllers
 					Console.WriteLine("Choice cannot be empty");
 					continue;
 				}
-				if (choice == "1" || choice == "2" || choice == "3")
+				if (choice == ChoiceConstants.ONE || choice == ChoiceConstants.TWO || choice == ChoiceConstants.THREE)
 				{
 					return (choice, false);
 				}

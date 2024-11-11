@@ -1,4 +1,4 @@
-﻿namespace Constants
+﻿namespace AppConstants
 {
 	public class Constants
 	{

@@ -7,7 +7,8 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using CustomExceptions;
 using ECommerce.Repositories;
-using Constants;
+using AppConstants;
+using System.Net;
 
 namespace ECommerce.Controllers
 {
@@ -37,7 +38,7 @@ namespace ECommerce.Controllers
 					Console.WriteLine("Only customers can place orders.");
 					return;
 				}
-				List<Product> products = _productService.GetAllProducts().ToList();
+				List<Product> products = _productService.GetAllProducts().Where(product => product.Quantity > 0).ToList();
 
 				DisplayAvailableProducts(products);
 
@@ -59,77 +60,41 @@ namespace ECommerce.Controllers
 					}
 
 
-					if (choice == Choice_Constants.ONE)
+					if (choice == ChoiceConstants.ONE)
 					{
-						Console.WriteLine("Enter Product sr. no. to order:");
-
-						(int serialNumber, wantToGoBack) = GetSerialNumberInput(products.Count);
+						wantToGoBack = AddProductToCurrentOrder(productIds, products, ref totalAmount);
 						if (wantToGoBack)
 						{
 							Console.Clear();
 							return;
 						}
-
-						var p = _productService.GetProductById(products[serialNumber - 1].Id);
-						totalAmount += p.Price;
-						p.Quantity--;
-						productIds.Add(products[serialNumber - 1].Id);
-						Console.WriteLine($"Added product with sr no. {serialNumber}");
-						Console.WriteLine($"Total amount: {totalAmount}\n");
 						continue;
 					}
-					if (choice == Choice_Constants.TWO)
+
+					if (choice == ChoiceConstants.TWO)
 					{
 						if (productIds.Count < 1)
 						{
 							Console.WriteLine("You have not selected anything.\nOrder cancelled.");
-							Loader.Loader.PressAnyKeyToExit();
+							Animation.Loader.PressAnyKeyToExit();
 							return;
 						}
 
 						Console.WriteLine($"Your total amount for this order is {totalAmount}.");
-						var addresses = user.Addresses;
 
-						Address address;
-						DisplayAddresses(addresses);
-						Console.WriteLine($"{addresses.Count}. Enter new Address");
-
-						(int addressChoice, wantToGoBack) = GetAddressChoiceInput(addresses.Count);
+						(Address address, wantToGoBack) = GetCustomerAddress(user);
 						if (wantToGoBack)
 						{
 							Console.Clear();
 							return;
 						}
 
-						if (addressChoice == addresses.Count)
-						{
-							(address, wantToGoBack) = Utils.AddressReader.GetAddress();
-							if (wantToGoBack)
-							{
-								Console.Clear();
-								return;
-							}
-							addresses.Add(address);
-						}
-						else
-						{
-							address = addresses[addressChoice];
-						}
-
-						var order = new Order()
-						{
-							Id = Guid.NewGuid(),
-							UserId = userId,
-							ProductIds = productIds,
-							TotalAmount = totalAmount,
-							Address = address,
-							OrderStatus = OrderStatus.Pending
-						};
+						var order = new Order() { Id = Guid.NewGuid(), UserId = userId, ProductIds = productIds, TotalAmount = totalAmount, Address = address, OrderStatus = OrderStatus.Pending };
 
 						_orderService.PlaceOrderAsync(order);
 						Console.WriteLine("Order placed successfully.");
 
-						Loader.Loader.PressAnyKeyToExit();
+						Animation.Loader.PressAnyKeyToExit();
 						break;
 					}
 				}
@@ -147,8 +112,8 @@ namespace ECommerce.Controllers
 			{
 				var orders = _orderService.GetAllOrders().ToList();
 
-				DisplayAllOrder(orders);
-				Loader.Loader.PressAnyKeyToExit();
+				DisplayAllOrders(orders);
+				Animation.Loader.PressAnyKeyToExit();
 			}
 			catch (Exception e)
 			{
@@ -162,8 +127,8 @@ namespace ECommerce.Controllers
 			try
 			{
 				var orders = _orderService.GetAllOrdersByUserId(userId).ToList();
-				DisplayAllOrder(orders);
-				Loader.Loader.PressAnyKeyToExit();
+				DisplayAllOrders(orders);
+				Animation.Loader.PressAnyKeyToExit();
 			}
 			catch (Exception e)
 			{
@@ -214,32 +179,13 @@ namespace ECommerce.Controllers
 				}
 				finally
 				{
-					Loader.Loader.PressAnyKeyToExit();
+					Animation.Loader.PressAnyKeyToExit();
 				}
 			}
 			catch (Exception e)
 			{
 				Console.WriteLine("Something went wrong.");
 				CustomLogger.Logger.LogError(e);
-			}
-		}
-
-		private void DisplayAllOrder(List<Order> orders)
-		{
-			if (orders.Count < 1)
-			{
-				Console.WriteLine($"No orders at the moment");
-				return;
-			}
-			foreach (var order in orders)
-			{
-				Console.WriteLine($"\nOrder ID: {order.Id}, Total Amount: {order.TotalAmount}, Status: {order.OrderStatus}");
-				Console.WriteLine("Products:");
-				foreach (var productId in order.ProductIds)
-				{
-					Product product = _productService.GetProductById(productId);
-					Console.WriteLine($"\tId: {product.Id}, Name: {product.Name}, Price: {product.Price}");
-				}
 			}
 		}
 
@@ -262,18 +208,10 @@ namespace ECommerce.Controllers
 			try
 			{
 				var orders = _orderService.GetAllOrdersByUserId(userId).Where(order => order.OrderStatus != OrderStatus.Delivered && order.OrderStatus != OrderStatus.Cancelled).ToList();
-				if (orders.Count < 1)
-				{
-					Console.WriteLine("No orders at the moment to cancel.");
-					Loader.Loader.PressAnyKeyToExit();
-					return;
-				}
-				foreach (var order in orders)
-				{
-					Console.WriteLine($"\nOrder ID: {order.Id}, Total Amount: {order.TotalAmount}, Status: {order.OrderStatus}");
-				}
 
-				Console.WriteLine("Enter order id to cancel:");
+				DisplayAllOrders(orders);
+
+				Console.WriteLine("\nEnter order id to cancel:");
 
 				(Guid id, bool wantToGoBack) = GetGuidInput();
 				if (wantToGoBack)
@@ -293,12 +231,14 @@ namespace ECommerce.Controllers
 					if (order.OrderStatus == OrderStatus.Cancelled)
 					{
 						Console.WriteLine("The order is already cancelled.");
+						Animation.Loader.PressAnyKeyToExit();
 						return;
 					}
 
 					if (order.OrderStatus == OrderStatus.Delivered)
 					{
 						Console.WriteLine("The order is delivered. Cannot be cancelled.");
+						Animation.Loader.PressAnyKeyToExit();
 						return;
 					}
 
@@ -317,7 +257,7 @@ namespace ECommerce.Controllers
 					CustomLogger.Logger.LogError(e);
 				}
 
-				Loader.Loader.PressAnyKeyToExit();
+				Animation.Loader.PressAnyKeyToExit();
 			}
 			catch (Exception e)
 			{
@@ -342,13 +282,32 @@ namespace ECommerce.Controllers
 			}
 		}
 
+		private void DisplayAllOrders(List<Order> orders)
+		{
+			if (orders.Count < 1)
+			{
+				Console.WriteLine($"No orders at the moment");
+				return;
+			}
+			foreach (var order in orders)
+			{
+				Console.WriteLine($"\nOrder ID: {order.Id}\nUser ID: {order.UserId}\nTotal Amount: {order.TotalAmount},\tStatus: {order.OrderStatus}");
+				Console.WriteLine("Products:");
+				foreach (var productId in order.ProductIds)
+				{
+					Product product = _productService.GetProductById(productId);
+					Console.Write($"\tId: {product.Id},\tName: {product.Name},\tPrice: {product.Price}\n");
+				}
+				Console.WriteLine();
+			}
+		}
+
 		private (string, bool) GetChoiceInput()
 		{
-			var choice = "";
 			while (true)
 			{
 				var input = Console.ReadLine();
-				if (input == Constants.Constants.BACK)
+				if (input == AppConstants.Constants.BACK)
 				{
 					Console.Clear();
 					return (input, true);
@@ -358,14 +317,12 @@ namespace ECommerce.Controllers
 					Console.WriteLine("Input cannot be empty.");
 					continue;
 				}
-				if (input == Choice_Constants.ONE || input == Choice_Constants.TWO)
+				if (input == ChoiceConstants.ONE || input == ChoiceConstants.TWO)
 				{
-					choice = input;
-					break;
+					return (input, false);
 				}
 				Console.WriteLine("Enter valid choice.");
 			}
-			return (choice, false);
 		}
 
 		private (int, bool) GetAddressChoiceInput(int addressCount)
@@ -374,7 +331,7 @@ namespace ECommerce.Controllers
 			while (true)
 			{
 				var input = Console.ReadLine();
-				if (input == Constants.Constants.BACK)
+				if (input == AppConstants.Constants.BACK)
 				{
 					Console.Clear();
 					return (-1, true);
@@ -401,7 +358,7 @@ namespace ECommerce.Controllers
 			while (true)
 			{
 				var input = Console.ReadLine();
-				if (input == Constants.Constants.BACK)
+				if (input == AppConstants.Constants.BACK)
 				{
 					Console.Clear();
 					return (-1, true);
@@ -432,7 +389,7 @@ namespace ECommerce.Controllers
 			while (true)
 			{
 				var input = Console.ReadLine();
-				if (input == Constants.Constants.BACK)
+				if (input == AppConstants.Constants.BACK)
 				{
 					Console.Clear();
 					return (new Guid(), true);
@@ -463,7 +420,7 @@ namespace ECommerce.Controllers
 
 			for (int i = 0; i < products.Count; i++)
 			{
-				Console.Write($"sr no. {i + 1},  ");
+				Console.Write($"sr no. {i + 1},\t");
 				products[i].DisplayInfo();
 			}
 			Console.WriteLine();
@@ -474,8 +431,61 @@ namespace ECommerce.Controllers
 			Console.WriteLine("\nChoose address");
 			for (int j = 0; j < addresses.Count; j++)
 			{
-				Console.WriteLine($"{j}. {addresses[j].Street}, {addresses[j].City}, {addresses[j].ZipCode}");
+				Console.WriteLine($"{j}.\t {addresses[j].Street},\t {addresses[j].City},\t {addresses[j].ZipCode}");
 			}
+		}
+
+		private (Address, bool) GetCustomerAddress(Customer user)
+		{
+			Address address;
+			var addresses = user.Addresses;
+
+			DisplayAddresses(addresses);
+			Console.WriteLine($"{addresses.Count}. Enter new Address");
+
+			(int addressChoice, bool wantToGoBack) = GetAddressChoiceInput(addresses.Count);
+			if (wantToGoBack)
+			{
+				Console.Clear();
+				return (address, true);
+			}
+
+			if (addressChoice == addresses.Count)
+			{
+				(address, wantToGoBack) = Utils.AddressReader.GetAddress();
+				if (wantToGoBack)
+				{
+					Console.Clear();
+					return (address, true);
+				}
+				addresses.Add(address);
+			}
+			else
+			{
+				address = addresses[addressChoice];
+			}
+			return (address, false);
+		}
+
+		private bool AddProductToCurrentOrder(List<Guid> productIds, List<Product> products, ref decimal totalAmount)
+		{
+			Console.WriteLine("Enter Product sr. no. to order:");
+
+			(int serialNumber, bool wantToGoBack) = GetSerialNumberInput(products.Count);
+			if (wantToGoBack)
+			{
+				Console.Clear();
+				return true;
+			}
+
+			var p = _productService.GetProductById(products[serialNumber - 1].Id);
+			totalAmount += p.Price;
+			p.Quantity--;
+			productIds.Add(products[serialNumber - 1].Id);
+			Console.WriteLine($"Added product with sr no. {serialNumber}");
+			Console.WriteLine($"Total amount: {totalAmount}\n");
+
+			return false;
 		}
 	}
 }

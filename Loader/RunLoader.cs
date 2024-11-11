@@ -1,4 +1,4 @@
-﻿namespace Loader
+﻿namespace Animation
 {
 	public static class Loader
 	{

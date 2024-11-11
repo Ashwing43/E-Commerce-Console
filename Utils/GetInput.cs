@@ -1,4 +1,4 @@
-﻿using Constants;
+﻿using AppConstants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Utils
 {
-    public static class GetInput
-    {
-       
-    }
+	public static class GetInput
+	{
+
+	}
 }

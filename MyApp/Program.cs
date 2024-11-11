@@ -1,4 +1,4 @@
-﻿using Loader;
+﻿using Animation;
 using Microsoft.Extensions.DependencyInjection;
 using Models;
 using ECommerce.Controllers;
@@ -6,7 +6,7 @@ using ECommerce.Models;
 using ECommerce.Repositories;
 using ECommerce.Services;
 using System.Globalization;
-using Constants;
+using AppConstants;
 
 class Program
 {
@@ -28,7 +28,7 @@ class Program
 		var userController = serviceProvider.GetService<UserController>();
 		var productController = serviceProvider.GetService<ProductController>();
 		var orderController = serviceProvider.GetService<OrderController>();
-		
+
 		while (true)
 		{
 			Console.Clear();
@@ -39,25 +39,25 @@ class Program
 
 			var choice = Console.ReadLine();
 
-			if (choice == Choice_Constants.ONE)
+			if (choice == ChoiceConstants.ONE)
 			{
 				userController.SignUp();
 				continue;
 			}
 
-			if (choice == Choice_Constants.TWO)
+			if (choice == ChoiceConstants.TWO)
 			{
-				var loggedInUser = userController.Login();
+				(var loggedInUser, bool wantToGoBack) = userController.Login();
+
+				if (wantToGoBack)
+				{
+					continue;
+				}
 
 				if (loggedInUser == null)
 				{
 					Console.WriteLine("\nUser not found, please sign up first.");
 					Thread.Sleep(1000);
-					continue;
-				}
-
-				if (loggedInUser.Name == Constants.Constants.BACK)
-				{
 					continue;
 				}
 
@@ -80,19 +80,19 @@ class Program
 						}
 						Console.WriteLine();
 					}
-
+					DataStorage.DataStore.SaveData();
 					CustomerMenu(loggedInUser.Id, productController, orderController, userController);
 					continue;
 				}
 			}
 
-			if (choice == Choice_Constants.THREE)
+			if (choice == ChoiceConstants.THREE)
 			{
-				Loader.Loader.RunExit();
+				Animation.Loader.RunExit();
 				break;
 			}
 
-			if (choice == Constants.Constants.BACK)
+			if (choice == AppConstants.Constants.BACK)
 			{
 				Console.WriteLine("Cannot go back from main menu. Please exit.");
 				Thread.Sleep(1200);
@@ -102,6 +102,8 @@ class Program
 			Console.WriteLine("Enter valid choice.");
 			Thread.Sleep(1000);
 		}
+		Console.Clear();
+		Console.Write("Exited\n");
 		DataStorage.DataStore.SaveData();
 	}
 
@@ -124,40 +126,40 @@ class Program
 
 			switch (choice)
 			{
-				case Choice_Constants.ONE:
+				case ChoiceConstants.ONE:
 					productController.AddProduct(adminId);
 					break;
 
-				case Choice_Constants.TWO:
+				case ChoiceConstants.TWO:
 					productController.ShowAllProductsToAdmin();
 					break;
 
-				case Choice_Constants.THREE:
+				case ChoiceConstants.THREE:
 					orderController.ShowAllOrders();
 					break;
 
-				case Choice_Constants.FOUR:
+				case ChoiceConstants.FOUR:
 					productController.UpdateProductDetails();
 					break;
 
-				case Choice_Constants.FIVE:
+				case ChoiceConstants.FIVE:
 					orderController.ChangeOrderStatus();
 					break;
 
-				case Choice_Constants.SIX:
+				case ChoiceConstants.SIX:
 					userController.DisplayInfo(adminId);
 					break;
 
-				case Choice_Constants.SEVEN:
+				case ChoiceConstants.SEVEN:
 					userController.EditProfile(adminId);
 					break;
 
-				case Choice_Constants.EIGHT:
-					Loader.Loader.RunLogout();
+				case ChoiceConstants.EIGHT:
+					Animation.Loader.RunLogout();
 					Console.Clear();
 					return; //return if user prompts to logout
 
-				case Constants.Constants.BACK:
+				case AppConstants.Constants.BACK:
 					Console.WriteLine("Cannot go back from admin menu. Please logout.");
 					Thread.Sleep(1200);
 					Console.Clear();
@@ -191,40 +193,40 @@ class Program
 
 			switch (choice)
 			{
-				case Choice_Constants.ONE:
+				case ChoiceConstants.ONE:
 					productController.ShowAllProductsToCustomer();
 					break;
 
-				case Choice_Constants.TWO:
+				case ChoiceConstants.TWO:
 					orderController.PlaceOrder(customerId);
 					break;
 
-				case Choice_Constants.THREE:
+				case ChoiceConstants.THREE:
 					orderController.ShowAllOrdersByUserId(customerId);
 					break;
 
-				case Choice_Constants.FOUR:
+				case ChoiceConstants.FOUR:
 					orderController.CancelOrder(customerId);
 					break;
 
-				case Choice_Constants.FIVE:
+				case ChoiceConstants.FIVE:
 					userController.DisplayInfo(customerId);
 					break;
 
-				case Choice_Constants.SIX:
+				case ChoiceConstants.SIX:
 					userController.EditProfile(customerId);
 					break;
 
-				case Choice_Constants.SEVEN:
+				case ChoiceConstants.SEVEN:
 					orderController.DisplayOrderStatus(customerId);
 					break;
 
-				case Choice_Constants.EIGHT:
-					Loader.Loader.RunLogout();
+				case ChoiceConstants.EIGHT:
+					Animation.Loader.RunLogout();
 					Console.Clear();
 					return; //return if user prompts to logout
 
-				case Constants.Constants.BACK:
+				case AppConstants.Constants.BACK:
 					Console.WriteLine("Cannot go back from customer menu. Please logout.");
 					Thread.Sleep(1000);
 					Console.Clear();
